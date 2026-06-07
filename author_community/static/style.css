@@ -422,3 +422,31 @@ select option { background: var(--dark2); }
   .quick-post-types { gap: 4px; }
   .quick-type { padding: 5px 9px; font-size: .72rem; }
 }
+
+/* ── LOUNGE ILLUSTRATION ─────────────────────────────────────────── */
+.auth-page { background: #1A0D2E; }
+.auth-card {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  max-width: 520px;
+}
+.lounge-illustration {
+  border-radius: 16px 16px 0 0;
+  overflow: hidden;
+  display: block;
+}
+.auth-card form {
+  background: #2A1545;
+  border: 1px solid #4A2870;
+  padding: 24px 20px 16px;
+}
+.auth-card .auth-switch {
+  background: #2A1545;
+  border: 1px solid #4A2870;
+  border-top: none;
+  padding: 14px 20px;
+  margin: 0;
+  border-radius: 0 0 16px 16px;
+}
