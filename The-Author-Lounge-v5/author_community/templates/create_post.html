@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %} — New Post{% endblock %}
+{% block content %}
+<div class="page-header">
+  <a href="{{ url_for('feed') }}" class="back-btn">← Back</a>
+  <h2>New Post</h2>
+</div>
+
+<div class="create-post-card">
+  <div class="post-type-selector">
+    <button type="button" class="type-btn {% if post_type == 'thought' %}active{% endif %}" data-type="thought">💭 Thought</button>
+    <button type="button" class="type-btn {% if post_type == 'snap' %}active{% endif %}" data-type="snap">📸 Snap</button>
+    <button type="button" class="type-btn {% if post_type == 'reel' %}active{% endif %}" data-type="reel">🎬 Reel</button>
+    <button type="button" class="type-btn {% if post_type == 'event' %}active{% endif %}" data-type="event">📅 Event</button>
+  </div>
+
+  <form method="POST" action="{{ url_for('create_post') }}" id="post-form">
+    <input type="hidden" name="post_type" id="post_type_input" value="{{ post_type }}">
+
+    <div class="form-group">
+      <textarea name="content" id="post-content" rows="5"
+                placeholder="What's on your author mind...?" required maxlength="2000"></textarea>
+      <div class="char-count"><span id="char-count">0</span>/2000</div>
+    </div>
+
+    <!-- Snap & Reel: media URL -->
+    <div class="form-group media-field" id="media-field" style="{% if post_type not in ['snap','reel'] %}display:none{% endif %}">
+      <label id="media-label">{% if post_type == 'reel' %}🎬 Video URL{% else %}📸 Image URL{% endif %}</label>
+      <input type="url" name="media_url" id="media_url" placeholder="Paste a link to your image or video">
+      <small>Paste a direct link from Imgur, YouTube, etc.</small>
+    </div>
+
+    <!-- Event fields -->
+    <div id="event-fields" style="{% if post_type != 'event' %}display:none{% endif %}">
+      <div class="form-group">
+        <label>📅 Event Date</label>
+        <input type="date" name="event_date" id="event_date">
+      </div>
+      <div class="form-group">
+        <label>📍 Location</label>
+        <input type="text" name="event_location" placeholder="Bookstore name, city, or 'Online'">
+      </div>
+    </div>
+
+    <div class="post-type-hints" id="post-hints">
+      <div class="hint" data-type="thought">💭 Share what's on your mind — a writing insight, life update, or random musing.</div>
+      <div class="hint" data-type="snap">📸 Share a photo from your writing life — your desk, your book, your inspiration.</div>
+      <div class="hint" data-type="reel">🎬 Share a short video — a reading, a book haul, a day-in-the-life clip.</div>
+      <div class="hint" data-type="event">📅 Announce a book signing, launch event, or appearance.</div>
+    </div>
+
+    <button type="submit" class="btn-primary btn-full">Publish</button>
+  </form>
+</div>
+{% endblock %}

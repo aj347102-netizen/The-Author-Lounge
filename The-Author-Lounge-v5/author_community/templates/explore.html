@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %} — Explore{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h2>🔍 Explore Authors</h2>
+</div>
+
+<div class="authors-grid">
+  {% for author in authors %}
+  <div class="author-card">
+    <a href="{{ url_for('profile', username=author.username) }}" class="author-card-link">
+      {% if author.avatar_url %}
+        <img src="{{ author.avatar_url }}" class="author-avatar" alt="{{ author.display_name }}">
+      {% else %}
+        <div class="author-avatar author-avatar-initial">{{ author.display_name[0] }}</div>
+      {% endif %}
+      <div class="author-card-info">
+        <span class="author-card-name">{{ author.display_name }}</span>
+        <span class="author-card-username">@{{ author.username }}</span>
+        {% if author.genre %}<span class="genre-badge sm">{{ author.genre }}</span>{% endif %}
+      </div>
+      <div class="author-card-stats">
+        <span>{{ author.post_count }} posts</span>
+        <span>{{ author.follower_count }} followers</span>
+      </div>
+    </a>
+    {% if user and not author.is_me %}
+    <button class="follow-btn {% if author.is_following %}following{% endif %}"
+            data-username="{{ author.username }}"
+            data-followers="{{ author.follower_count }}">
+      {% if author.is_following %}✓ Following{% else %}+ Follow{% endif %}
+    </button>
+    {% endif %}
+  </div>
+  {% endfor %}
+
+  {% if not authors %}
+  <div class="empty-state">
+    <div class="empty-icon">📚</div>
+    <h3>No authors yet</h3>
+    <p>Be the first to join!</p>
+    <a href="{{ url_for('register') }}" class="btn-primary">Join Now</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
