@@ -7,15 +7,18 @@
 </div>
 
 <div class="auth-card" style="margin-top:1rem;">
-  <form method="POST" action="{{ url_for('edit_profile') }}">
+  <form method="POST" action="{{ url_for('edit_profile') }}" enctype="multipart/form-data">
+
     <div class="form-group">
       <label>Display Name</label>
       <input type="text" name="display_name" value="{{ user['display_name'] }}" required>
     </div>
+
     <div class="form-group">
       <label>Bio</label>
-      <textarea name="bio" rows="4">{{ user['bio'] }}</textarea>
+      <textarea name="bio" rows="4">{{ user['bio'] or '' }}</textarea>
     </div>
+
     <div class="form-group">
       <label>Genre</label>
       <select name="genre">
@@ -25,16 +28,24 @@
         {% endfor %}
       </select>
     </div>
+
     <div class="form-group">
-      <label>Profile Photo URL</label>
-      <input type="url" name="avatar_url" value="{{ user['avatar_url'] }}" placeholder="https://...">
-      <small>Paste a link to your profile photo</small>
+      <label>Profile Photo 📸</label>
+      {% if user['avatar_url'] %}
+      <img src="{{ user['avatar_url'] }}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;border:3px solid #C9A84C;display:block;margin-bottom:10px;">
+      {% endif %}
+      <input type="file" name="avatar_file" accept="image/*"
+             style="background:#2A1545;color:#E8E0D0;padding:10px;border-radius:10px;border:1.5px solid #4A2870;width:100%;">
+      <small>Choose a photo from your library or take one 📱</small>
     </div>
+
     <div class="form-group">
-      <label>Website</label>
-      <input type="url" name="website" value="{{ user['website'] }}" placeholder="https://yoursite.com">
+      <label>Website 🌐</label>
+      <input type="text" name="website" value="{{ user['website'] or '' }}" placeholder="yoursite.com">
+      <small>Your author website or social link</small>
     </div>
-    <button type="submit" class="btn-primary btn-full">Save Changes</button>
+
+    <button type="submit" class="btn-primary btn-full">Save Changes ✨</button>
   </form>
 </div>
 {% endblock %}
