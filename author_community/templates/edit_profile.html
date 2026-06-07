@@ -37,11 +37,13 @@
       <img id="preview" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #C9A84C;display:none;margin-bottom:12px;">
       {% endif %}
 
-      <input type="file" name="avatar_file" accept="image/*" id="avatar_input" style="position:absolute;width:1px;height:1px;opacity:0;">
-      <label for="avatar_input" style="display:block;width:100%;padding:14px;background:#3A2260;color:#C9A84C;border:2px solid #C9A84C;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;text-align:center;">
-        📷 Choose Photo from Library
+      <input type="file" name="avatar_file" id="avatar_input"
+             style="position:absolute;width:1px;height:1px;opacity:0.01;">
+      <label for="avatar_input"
+             style="display:block;width:100%;padding:16px;background:#3A2260;color:#C9A84C;border:2px solid #C9A84C;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;text-align:center;-webkit-appearance:none;">
+        📷 Choose Photo
       </label>
-      <small id="file-name" style="display:block;margin-top:6px;color:#9A7ABB;">No photo selected</small>
+      <small id="file-name" style="display:block;margin-top:8px;color:#9A7ABB;text-align:center;">No photo selected yet</small>
     </div>
 
     <div class="form-group">
@@ -55,13 +57,16 @@
 </div>
 
 <script>
-document.getElementById('avatar_input').addEventListener('change', function() {
-  const file = this.files[0];
+var input = document.getElementById('avatar_input');
+var preview = document.getElementById('preview');
+var fileName = document.getElementById('file-name');
+
+input.addEventListener('change', function() {
+  var file = this.files[0];
   if (file) {
-    document.getElementById('file-name').textContent = '✅ ' + file.name;
-    const reader = new FileReader();
+    fileName.textContent = '✅ ' + file.name;
+    var reader = new FileReader();
     reader.onload = function(e) {
-      const preview = document.getElementById('preview');
       preview.src = e.target.result;
       preview.style.display = 'block';
     };
