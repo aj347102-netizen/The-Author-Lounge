@@ -29,6 +29,36 @@
       </select>
     </div>
 
+    <!-- PHOTO SECTION -->
+    <div class="form-group">
+      <label>Profile Photo 📸</label>
+      {% if user['avatar_url'] %}
+      <img src="{{ user['avatar_url'] }}" id="preview" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #C9A84C;display:block;margin-bottom:12px;">
+      {% else %}
+      <img id="preview" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #C9A84C;display:none;margin-bottom:12px;">
+      {% endif %}
+
+      <!-- Mobile photo picker -->
+      <div id="mobile-picker" style="display:none;">
+        <div style="display:flex;gap:10px;margin-bottom:10px;">
+          <label for="photo-library" style="flex:1;padding:14px 8px;background:#3A2260;color:#C9A84C;border:2px solid #C9A84C;border-radius:10px;font-size:.9rem;font-weight:600;cursor:pointer;text-align:center;display:block;">
+            🖼️ Photo Library
+            <input type="file" name="avatar_file" id="photo-library" accept="image/*" style="display:none;">
+          </label>
+          <label for="take-photo" style="flex:1;padding:14px 8px;background:#3A2260;color:#C9A84C;border:2px solid #C9A84C;border-radius:10px;font-size:.9rem;font-weight:600;cursor:pointer;text-align:center;display:block;">
+            📷 Take Photo
+            <input type="file" name="avatar_file" id="take-photo" accept="image/*" capture="environment" style="display:none;">
+          </label>
+        </div>
+        <small id="file-name" style="color:#9A7ABB;display:block;text-align:center;">No photo selected</small>
+      </div>
+
+      <!-- Desktop photo picker -->
+      <div id="desktop-picker">
+        <input type="file" name="avatar_file" id="desktop-file" accept="image/*" style="width:100%;padding:10px;background:#2A1545;color:#E8E0D0;border:1.5px solid #4A2870;border-radius:10px;">
+      </div>
+    </div>
+
     <div class="form-group">
       <label>Website 🌐</label>
       <input type="text" name="website" value="{{ user['website'] or '' }}" placeholder="yoursite.com">
@@ -57,4 +87,32 @@
     <button type="submit" class="btn-primary btn-full">Save Changes ✨</button>
   </form>
 </div>
+
+<script>
+// Detect if user is on a phone
+var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+if (isMobile) {
+  document.getElementById('mobile-picker').style.display = 'block';
+  document.getElementById('desktop-picker').style.display = 'none';
+}
+
+// Show preview when photo selected
+function handleFileChange(input) {
+  var file = input.files[0];
+  if (file) {
+    document.getElementById('file-name').textContent = '✅ ' + file.name;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var preview = document.getElementById('preview');
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+document.getElementById('photo-library').addEventListener('change', function() { handleFileChange(this); });
+document.getElementById('take-photo').addEventListener('change', function() { handleFileChange(this); });
+document.getElementById('desktop-file').addEventListener('change', function() { handleFileChange(this); });
+</script>
 {% endblock %}
