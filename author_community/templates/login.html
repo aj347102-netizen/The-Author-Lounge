@@ -1,239 +1,551 @@
-{% extends 'base.html' %}
-{% block content %}
-<style>
-.auth-page { background: #1A0D2E; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 0; }
-.lounge-illustration { width: 100%; max-width: 520px; }
-.login-form-wrap {
-  width: 100%; max-width: 520px;
-  background: #2A1545; border: 1px solid #4A2870;
-  border-top: none; padding: 24px 20px 0;
-  opacity: 0; transform: translateY(20px);
-  animation: slideUp 0.6s ease forwards;
-  animation-delay: 4.2s;
-}
-.login-form-wrap .auth-switch {
-  background: #2A1545; border: 1px solid #4A2870;
-  border-top: none; padding: 14px 20px;
-  border-radius: 0 0 16px 16px;
-  text-align: center; color: #9A7ABB; font-size: .9rem;
-}
-@keyframes slideUp {
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-@keyframes popIn {
-  from { opacity: 0; transform: scale(0.8); }
-  to { opacity: 1; transform: scale(1); }
-}
-@keyframes drawLeft {
-  from { opacity: 0; transform: translateX(-20px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes drawRight {
-  from { opacity: 0; transform: translateX(20px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes drawUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes typewriter {
-  from { opacity: 0; letter-spacing: 8px; }
-  to { opacity: 1; letter-spacing: normal; }
-}
-@keyframes flicker {
-  0%,100% { opacity: 0.9; } 50% { opacity: 0.6; }
-}
-.g-bg     { animation: fadeIn 0.5s ease forwards; animation-delay: 0.1s; opacity: 0; }
-.g-shelf-l { animation: drawLeft 0.5s ease forwards; animation-delay: 0.4s; opacity: 0; }
-.g-shelf-r { animation: drawRight 0.5s ease forwards; animation-delay: 0.6s; opacity: 0; }
-.g-books-l1 { animation: drawLeft 0.4s ease forwards; animation-delay: 0.8s; opacity: 0; }
-.g-books-l2 { animation: drawLeft 0.4s ease forwards; animation-delay: 1.0s; opacity: 0; }
-.g-books-r1 { animation: drawRight 0.4s ease forwards; animation-delay: 0.9s; opacity: 0; }
-.g-books-r2 { animation: drawRight 0.4s ease forwards; animation-delay: 1.1s; opacity: 0; }
-.g-window  { animation: fadeIn 0.5s ease forwards; animation-delay: 1.3s; opacity: 0; }
-.g-moon    { animation: popIn 0.4s ease forwards; animation-delay: 1.6s; opacity: 0; }
-.g-lamps   { animation: fadeIn 0.4s ease forwards; animation-delay: 1.8s; opacity: 0; }
-.g-sofa    { animation: drawUp 0.5s ease forwards; animation-delay: 2.1s; opacity: 0; }
-.g-person1 { animation: popIn 0.4s ease forwards; animation-delay: 2.5s; opacity: 0; }
-.g-person2 { animation: popIn 0.4s ease forwards; animation-delay: 2.8s; opacity: 0; }
-.g-person3 { animation: popIn 0.4s ease forwards; animation-delay: 3.0s; opacity: 0; }
-.g-candle  { animation: popIn 0.3s ease forwards; animation-delay: 3.3s; opacity: 0; }
-.g-title   { animation: typewriter 0.6s ease forwards; animation-delay: 3.6s; opacity: 0; }
-.g-candle-flame { animation: flicker 1s infinite; }
-</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>The Author Lounge — Welcome</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-<div class="auth-page">
-  <div class="lounge-illustration">
-    <svg width="100%" viewBox="0 0 680 400" role="img">
-      <title>The Author Lounge</title>
-      <g class="g-bg">
-        <rect width="680" height="400" fill="#1A0D2E"/>
-        <rect x="0" y="55" width="680" height="270" fill="#2D1B4E"/>
-        <rect x="0" y="300" width="680" height="100" fill="#3D1F6E"/>
-        <ellipse cx="340" cy="318" rx="220" ry="24" fill="#4A2878" opacity="0.7"/>
-      </g>
-      <g class="g-shelf-l">
-        <rect x="25" y="70" width="115" height="215" rx="4" fill="#3A2260"/>
-        <rect x="25" y="70" width="115" height="8" fill="#C9A84C"/>
-        <rect x="25" y="130" width="115" height="5" fill="#C9A84C"/>
-        <rect x="25" y="190" width="115" height="5" fill="#C9A84C"/>
-        <rect x="25" y="250" width="115" height="5" fill="#C9A84C"/>
-      </g>
-      <g class="g-shelf-r">
-        <rect x="540" y="70" width="115" height="215" rx="4" fill="#3A2260"/>
-        <rect x="540" y="70" width="115" height="8" fill="#C9A84C"/>
-        <rect x="540" y="130" width="115" height="5" fill="#C9A84C"/>
-        <rect x="540" y="190" width="115" height="5" fill="#C9A84C"/>
-        <rect x="540" y="250" width="115" height="5" fill="#C9A84C"/>
-      </g>
-      <g class="g-books-l1">
-        <rect x="30" y="78" width="13" height="50" rx="2" fill="#E05050"/>
-        <rect x="45" y="82" width="10" height="46" rx="2" fill="#50A0E0"/>
-        <rect x="57" y="76" width="15" height="52" rx="2" fill="#C9A84C"/>
-        <rect x="74" y="80" width="11" height="48" rx="2" fill="#60C080"/>
-        <rect x="87" y="78" width="10" height="50" rx="2" fill="#A060D0"/>
-        <rect x="99" y="81" width="13" height="47" rx="2" fill="#E08040"/>
-        <rect x="114" y="79" width="11" height="49" rx="2" fill="#D04060"/>
-      </g>
-      <g class="g-books-l2">
-        <rect x="30" y="137" width="15" height="51" rx="2" fill="#4080D0"/>
-        <rect x="47" y="139" width="11" height="49" rx="2" fill="#C9A84C"/>
-        <rect x="60" y="135" width="10" height="53" rx="2" fill="#50B080"/>
-        <rect x="72" y="138" width="13" height="50" rx="2" fill="#D05070"/>
-        <rect x="87" y="136" width="11" height="52" rx="2" fill="#8060C0"/>
-        <rect x="100" y="139" width="15" height="49" rx="2" fill="#E09040"/>
-        <rect x="30" y="197" width="11" height="51" rx="2" fill="#C9A84C"/>
-        <rect x="43" y="199" width="13" height="49" rx="2" fill="#5090E0"/>
-        <rect x="58" y="195" width="10" height="53" rx="2" fill="#D06050"/>
-        <rect x="70" y="198" width="15" height="50" rx="2" fill="#60B090"/>
-        <rect x="87" y="196" width="11" height="52" rx="2" fill="#9050B0"/>
-        <rect x="100" y="199" width="15" height="49" rx="2" fill="#E0A030"/>
-      </g>
-      <g class="g-books-r1">
-        <rect x="545" y="78" width="13" height="50" rx="2" fill="#60B0E0"/>
-        <rect x="560" y="81" width="10" height="47" rx="2" fill="#C9A84C"/>
-        <rect x="572" y="77" width="15" height="51" rx="2" fill="#D05060"/>
-        <rect x="589" y="79" width="11" height="49" rx="2" fill="#70C070"/>
-        <rect x="602" y="78" width="13" height="50" rx="2" fill="#B060D0"/>
-        <rect x="617" y="80" width="10" height="48" rx="2" fill="#E08030"/>
-        <rect x="629" y="78" width="15" height="50" rx="2" fill="#C9A84C"/>
-      </g>
-      <g class="g-books-r2">
-        <rect x="545" y="137" width="10" height="51" rx="2" fill="#D06040"/>
-        <rect x="557" y="139" width="15" height="49" rx="2" fill="#5080D0"/>
-        <rect x="574" y="136" width="11" height="52" rx="2" fill="#C9A84C"/>
-        <rect x="587" y="138" width="13" height="50" rx="2" fill="#60C090"/>
-        <rect x="602" y="137" width="10" height="51" rx="2" fill="#A050C0"/>
-        <rect x="614" y="139" width="15" height="49" rx="2" fill="#E09030"/>
-        <rect x="545" y="197" width="15" height="51" rx="2" fill="#C9A84C"/>
-        <rect x="562" y="199" width="11" height="49" rx="2" fill="#5090D0"/>
-        <rect x="575" y="195" width="13" height="53" rx="2" fill="#D06040"/>
-        <rect x="590" y="198" width="10" height="50" rx="2" fill="#70B070"/>
-        <rect x="602" y="196" width="15" height="52" rx="2" fill="#9050B0"/>
-        <rect x="619" y="199" width="11" height="49" rx="2" fill="#E0A020"/>
-      </g>
-      <g class="g-window">
-        <rect x="282" y="82" width="116" height="88" rx="6" fill="#1A0D2E" stroke="#C9A84C" stroke-width="3"/>
-        <rect x="289" y="89" width="102" height="74" rx="4" fill="#2D1050"/>
-        <line x1="340" y1="89" x2="340" y2="163" stroke="#C9A84C" stroke-width="2"/>
-        <line x1="289" y1="126" x2="391" y2="126" stroke="#C9A84C" stroke-width="2"/>
-        <circle cx="305" cy="100" r="2" fill="#F0D080"/>
-        <circle cx="372" cy="103" r="1.5" fill="#F0D080"/>
-        <circle cx="358" cy="96" r="1" fill="#F0D080"/>
-        <circle cx="298" cy="148" r="1.5" fill="#F0D080"/>
-        <circle cx="382" cy="145" r="1" fill="#F0D080"/>
-      </g>
-      <g class="g-moon">
-        <circle cx="340" cy="126" r="21" fill="#F0D080" opacity="0.9"/>
-        <circle cx="351" cy="120" r="15" fill="#2D1050"/>
-      </g>
-      <g class="g-lamps">
-        <rect x="160" y="215" width="7" height="78" fill="#8060A0"/>
-        <rect x="150" y="288" width="26" height="7" rx="3" fill="#604080"/>
-        <polygon points="150,215 175,215 169,178 156,178" fill="#C9A84C" opacity="0.9"/>
-        <rect x="513" y="215" width="7" height="78" fill="#8060A0"/>
-        <rect x="503" y="288" width="26" height="7" rx="3" fill="#604080"/>
-        <polygon points="503,215 528,215 522,178 509,178" fill="#C9A84C" opacity="0.9"/>
-        <rect x="162" y="272" width="56" height="9" rx="4" fill="#5A3A80"/>
-        <rect x="173" y="281" width="7" height="28" fill="#4A2870"/>
-        <rect x="192" y="281" width="7" height="28" fill="#4A2870"/>
-        <rect x="183" y="265" width="14" height="7" rx="3" fill="#F0D080"/>
-        <rect x="462" y="272" width="56" height="9" rx="4" fill="#5A3A80"/>
-        <rect x="473" y="281" width="7" height="28" fill="#4A2870"/>
-        <rect x="492" y="281" width="7" height="28" fill="#4A2870"/>
-        <rect x="466" y="264" width="20" height="9" rx="2" fill="#C9A84C"/>
-      </g>
-      <g class="g-sofa">
-        <rect x="202" y="262" width="276" height="48" rx="12" fill="#4A2878"/>
-        <rect x="202" y="224" width="276" height="48" rx="10" fill="#5A3090"/>
-        <rect x="192" y="233" width="28" height="68" rx="10" fill="#5A3090"/>
-        <rect x="460" y="233" width="28" height="68" rx="10" fill="#5A3090"/>
-        <rect x="210" y="250" width="78" height="52" rx="8" fill="#6A40A8"/>
-        <rect x="301" y="250" width="78" height="52" rx="8" fill="#6A40A8"/>
-        <rect x="392" y="250" width="78" height="52" rx="8" fill="#6A40A8"/>
-        <rect x="202" y="224" width="276" height="5" rx="2" fill="#C9A84C" opacity="0.6"/>
-      </g>
-      <g class="g-person1">
-        <rect x="222" y="232" width="34" height="42" rx="8" fill="#E8A870"/>
-        <circle cx="239" cy="222" r="17" fill="#E8A870"/>
-        <ellipse cx="239" cy="209" rx="17" ry="9" fill="#3D2010"/>
-        <rect x="214" y="260" width="32" height="24" rx="3" fill="#F0D080"/>
-        <line x1="230" y1="260" x2="230" y2="284" stroke="#C9A84C" stroke-width="1.5"/>
-        <rect x="224" y="272" width="13" height="28" rx="6" fill="#3A2260"/>
-        <rect x="239" y="272" width="13" height="28" rx="6" fill="#3A2260"/>
-      </g>
-      <g class="g-person2">
-        <rect x="390" y="232" width="34" height="42" rx="8" fill="#C8786A"/>
-        <circle cx="407" cy="222" r="17" fill="#C8786A"/>
-        <ellipse cx="407" cy="208" rx="19" ry="13" fill="#1A0A05"/>
-        <rect x="391" y="260" width="32" height="24" rx="3" fill="#A060D0"/>
-        <line x1="407" y1="260" x2="407" y2="284" stroke="#7040A0" stroke-width="1.5"/>
-        <rect x="393" y="272" width="13" height="28" rx="6" fill="#2A1845"/>
-        <rect x="408" y="272" width="13" height="28" rx="6" fill="#2A1845"/>
-      </g>
-      <g class="g-person3">
-        <rect x="88" y="263" width="88" height="42" rx="10" fill="#4A2878"/>
-        <rect x="88" y="239" width="88" height="30" rx="8" fill="#5A3090"/>
-        <rect x="78" y="246" width="20" height="52" rx="8" fill="#5A3090"/>
-        <rect x="176" y="246" width="20" height="52" rx="8" fill="#5A3090"/>
-        <rect x="106" y="242" width="32" height="40" rx="8" fill="#B09060"/>
-        <circle cx="122" cy="232" r="16" fill="#B09060"/>
-        <ellipse cx="122" cy="219" rx="16" ry="9" fill="#1A0A00"/>
-        <rect x="106" y="268" width="30" height="22" rx="3" fill="#E05050"/>
-        <line x1="121" y1="268" x2="121" y2="290" stroke="#B03030" stroke-width="1.5"/>
-      </g>
-      <g class="g-candle">
-        <rect x="328" y="302" width="24" height="7" rx="3" fill="#5A3A80"/>
-        <rect x="333" y="289" width="7" height="15" rx="2" fill="#F0D080"/>
-        <g class="g-candle-flame">
-          <ellipse cx="336" cy="286" rx="4" ry="7" fill="#F0A030" opacity="0.8"/>
-          <ellipse cx="336" cy="284" rx="2.5" ry="4.5" fill="#FFEE88" opacity="0.95"/>
-        </g>
-      </g>
-      <g class="g-title">
-        <text x="340" y="46" text-anchor="middle" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#C9A84C">The Author Lounge</text>
-        <text x="340" y="64" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#9A7ABB">Where authors come to share their story</text>
-      </g>
-    </svg>
-  </div>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #080402;
+      min-height: 100vh;
+    }
 
-  <div class="login-form-wrap">
+    #lounge-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+    }
+
+    .scene-overlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%);
+      z-index: 1;
+    }
+
+    .login-page {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 24px;
+    }
+
+    .login-panel {
+      width: 100%;
+      max-width: 390px;
+      background: rgba(10, 5, 2, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(201, 168, 76, 0.22);
+      border-radius: 20px;
+      padding: 38px 34px;
+      box-shadow:
+        0 0 0 1px rgba(201, 168, 76, 0.07),
+        0 32px 80px rgba(0,0,0,0.75),
+        inset 0 1px 0 rgba(201, 168, 76, 0.14);
+      animation: panelIn 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: 0.3s;
+    }
+
+    @keyframes panelIn {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .panel-brand { text-align: center; margin-bottom: 30px; }
+    .panel-brand .quill { font-size: 30px; display: block; margin-bottom: 10px; }
+    .panel-brand h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px; font-weight: 700;
+      color: #C9A84C; letter-spacing: 0.01em; line-height: 1.2;
+    }
+    .panel-brand .tagline {
+      font-size: 13px; color: #6A5030; font-style: italic;
+      margin-top: 6px; font-family: 'Playfair Display', serif;
+    }
+
+    .flash { padding: 10px 14px; border-radius: 10px; font-size: 13px; margin-bottom: 16px; text-align: center; }
+    .flash-error   { background: rgba(139,37,0,0.28); color: #FF9060; border: 1px solid rgba(139,37,0,0.4); }
+    .flash-success { background: rgba(201,168,76,0.12); color: #C9A84C; border: 1px solid rgba(201,168,76,0.28); }
+
+    .form-group { margin-bottom: 17px; }
+    .form-group label {
+      display: block; font-size: 11px; font-weight: 600;
+      letter-spacing: 0.09em; text-transform: uppercase; color: #6A5030; margin-bottom: 7px;
+    }
+    .form-group input {
+      width: 100%; background: rgba(255,255,255,0.035);
+      border: 1px solid rgba(201, 168, 76, 0.16); border-radius: 10px;
+      padding: 12px 15px; font-size: 15px; color: #E8E0D0;
+      font-family: 'Inter', sans-serif; outline: none;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none;
+    }
+    .form-group input:focus {
+      border-color: rgba(201, 168, 76, 0.5);
+      background: rgba(201, 168, 76, 0.04);
+      box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.07);
+    }
+    .form-group input::placeholder { color: #352510; }
+
+    .btn-signin {
+      width: 100%; padding: 14px;
+      background: linear-gradient(135deg, #C9A84C 0%, #A07830 100%);
+      color: #1C0F07; font-size: 15px; font-weight: 700;
+      font-family: 'Inter', sans-serif; letter-spacing: 0.04em;
+      border: none; border-radius: 12px; cursor: pointer; margin-top: 6px;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(180, 130, 30, 0.28);
+    }
+    .btn-signin:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 8px 28px rgba(180, 130, 30, 0.42); }
+    .btn-signin:active { transform: translateY(0); }
+
+    .panel-divider { display: flex; align-items: center; gap: 10px; margin: 20px 0; }
+    .panel-divider::before, .panel-divider::after { content: ''; flex: 1; height: 1px; background: rgba(201, 168, 76, 0.12); }
+    .panel-divider span { font-size: 11px; color: #3A2510; letter-spacing: 0.07em; text-transform: uppercase; }
+
+    .panel-footer { text-align: center; }
+    .panel-footer p { font-size: 13px; color: #4A3020; }
+    .panel-footer a { color: #C9A84C; text-decoration: none; font-weight: 600; transition: color 0.2s; }
+    .panel-footer a:hover { color: #F0D080; }
+
+    .scene-credit { position: fixed; bottom: 28px; left: 36px; z-index: 2; pointer-events: none; }
+    .scene-credit h2 { font-family: 'Playfair Display', serif; font-size: 26px; color: #C9A84C; text-shadow: 0 2px 20px rgba(0,0,0,0.95); }
+    .scene-credit p { font-family: 'Playfair Display', serif; font-style: italic; font-size: 13px; color: #6A5030; margin-top: 4px; text-shadow: 0 1px 8px rgba(0,0,0,0.95); }
+
+    @media (max-width: 767px) {
+      .scene-credit { display: none; }
+      .login-page { justify-content: center; align-items: flex-end; padding: 0; }
+      .login-panel { border-radius: 20px 20px 0 0; padding: 26px 22px 32px; max-width: 100%; border-bottom: none; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="lounge-canvas"></canvas>
+<div class="scene-overlay"></div>
+
+<div class="scene-credit">
+  <h2>The Author Lounge</h2>
+  <p>Where every story finds its home</p>
+</div>
+
+<div class="login-page">
+  <div class="login-panel">
+    <div class="panel-brand">
+      <span class="quill">🖊️</span>
+      <h1>The Author Lounge</h1>
+      <p class="tagline">Pull up a chair. Your story starts here.</p>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, msg in messages %}
+        <div class="flash flash-{{ category }}">{{ msg }}</div>
+      {% endfor %}
+    {% endwith %}
+
     <form method="POST" action="{{ url_for('login') }}">
       <div class="form-group">
         <label>Username</label>
-        <input type="text" name="username" placeholder="your_username" required autocomplete="username">
+        <input type="text" name="username" placeholder="your_username" autocomplete="username" required>
       </div>
       <div class="form-group">
         <label>Password</label>
-        <input type="password" name="password" placeholder="••••••••" required autocomplete="current-password">
+        <input type="password" name="password" placeholder="••••••••" autocomplete="current-password" required>
       </div>
-      <button type="submit" class="btn-primary btn-full">Enter the Lounge</button>
+      <button type="submit" class="btn-signin">Enter the Lounge</button>
     </form>
-    <p class="auth-switch">New author? <a href="{{ url_for('register') }}">Join the community</a></p>
+
+    <div class="panel-divider"><span>new here?</span></div>
+    <div class="panel-footer">
+      <p>No account yet? <a href="{{ url_for('register') }}">Join free 🍵</a></p>
+    </div>
   </div>
 </div>
-{% endblock %}
+
+<script>
+(function() {
+  const canvas = document.getElementById('lounge-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, t = 0;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function woodGrain(x, y, w, h, base, grain, angle) {
+    ctx.save();
+    ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
+    ctx.fillStyle = base; ctx.fillRect(x, y, w, h);
+    ctx.translate(x+w/2, y+h/2); ctx.rotate(angle||0);
+    for (let i=-w; i<w*2; i+=3) {
+      const a = 0.05 + Math.abs(Math.sin(i*0.15+Math.sin(i*0.08)*3))*0.15;
+      ctx.strokeStyle = grain; ctx.globalAlpha = a;
+      ctx.lineWidth = 0.8+Math.sin(i*0.3)*0.8;
+      ctx.beginPath();
+      ctx.moveTo(i,-h);
+      ctx.bezierCurveTo(i+Math.sin(i*0.1)*8,-h/2, i+Math.cos(i*0.07)*10,h/2, i+Math.sin(i*0.12)*6,h);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1; ctx.restore();
+  }
+
+  function draw(phase) {
+    ctx.clearRect(0,0,W,H);
+    const scaleX = W/900, scaleY = H/600;
+    ctx.save();
+    ctx.scale(scaleX, scaleY);
+    const VW=900, VH=600;
+
+    const cg = ctx.createLinearGradient(0,0,0,55);
+    cg.addColorStop(0,'#080402'); cg.addColorStop(1,'#180E07');
+    ctx.fillStyle=cg; ctx.fillRect(0,0,VW,55);
+    ctx.fillStyle='#2A1A0A'; ctx.fillRect(0,44,VW,10);
+    ctx.fillStyle='#3A2210'; ctx.fillRect(0,52,VW,5);
+    for (let bx of [195,450,705]) {
+      ctx.fillStyle='#140B04'; ctx.fillRect(bx-22,0,44,57);
+      ctx.fillStyle='#1E1208'; ctx.fillRect(bx-18,0,36,54);
+    }
+
+    ctx.save();
+    ctx.beginPath(); ctx.moveTo(0,52); ctx.lineTo(235,52); ctx.lineTo(235,385); ctx.lineTo(0,600); ctx.closePath();
+    woodGrain(-10,0,260,620,'#1A0B04','#0D0602',0.08);
+    ctx.restore();
+    ctx.save();
+    ctx.beginPath(); ctx.moveTo(665,52); ctx.lineTo(900,52); ctx.lineTo(900,600); ctx.lineTo(665,385); ctx.closePath();
+    woodGrain(650,0,265,620,'#1A0B04','#0D0602',-0.08);
+    ctx.restore();
+
+    woodGrain(235,52,430,340,'#1C0D05','#100802',0);
+    ctx.fillStyle='#251508'; ctx.fillRect(235,292,430,95);
+    ctx.strokeStyle='#361E0C'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(235,290); ctx.lineTo(665,290); ctx.stroke();
+
+    const wx=240,wy=65,ww=75,wh=115;
+    const skyG=ctx.createLinearGradient(wx,wy,wx,wy+wh);
+    skyG.addColorStop(0,'#030916'); skyG.addColorStop(1,'#0A1A30');
+    ctx.fillStyle=skyG; ctx.fillRect(wx,wy,ww,wh);
+    const stars=[[256,76],[270,83],[248,92],[275,100],[260,112],[254,125],[243,130],[278,88],[264,118]];
+    for (let [sx,sy] of stars) {
+      const tw=0.4+0.6*Math.abs(Math.sin(phase*1.5+sx*0.3));
+      ctx.fillStyle=`rgba(255,255,220,${tw})`;
+      ctx.beginPath(); ctx.arc(sx,sy,0.9,0,Math.PI*2); ctx.fill();
+    }
+    const mg=ctx.createRadialGradient(278,86,0,278,86,20);
+    mg.addColorStop(0,'rgba(240,228,170,0.35)'); mg.addColorStop(1,'rgba(240,228,170,0)');
+    ctx.fillStyle=mg; ctx.beginPath(); ctx.arc(278,86,20,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#EEE090'; ctx.beginPath(); ctx.arc(278,86,9,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#030916'; ctx.beginPath(); ctx.arc(281,83,7,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='#3A2010'; ctx.lineWidth=5;
+    ctx.strokeRect(wx,wy,ww,wh);
+    ctx.lineWidth=4;
+    ctx.beginPath(); ctx.moveTo(wx+ww/2,wy); ctx.lineTo(wx+ww/2,wy+wh); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(wx,wy+wh/2); ctx.lineTo(wx+ww,wy+wh/2); ctx.stroke();
+
+    const bookColors=['#8B1A00','#C9A84C','#1A3A7A','#2A7A3A','#7A1A5A','#B86A20','#1A6A5A','#5A1A7A','#6A4A1A','#2A4A8B','#A03000','#3A6A2A','#5A2A6A','#B87A00','#1A5A8B','#8B3A1A','#4A1A8B','#8B5A2A','#2A8B3A','#7A1A2A','#1A7A5A'];
+    function shelf(sx,sw) {
+      ctx.fillStyle='#160A02'; ctx.fillRect(sx,52,sw,335);
+      ctx.fillStyle='#1E1006'; ctx.fillRect(sx+4,56,sw-8,327);
+      for (let ry of [104,156,208,260,312]) {
+        ctx.fillStyle='#3A2210'; ctx.fillRect(sx+4,ry+52,sw-8,10);
+        ctx.fillStyle='#4A2E18'; ctx.fillRect(sx+4,ry+52,sw-8,3);
+        ctx.fillStyle='rgba(0,0,0,0.65)'; ctx.fillRect(sx+4,ry+58,sw-8,5);
+      }
+      let bi=0;
+      for (let ri=0; ri<5; ri++) {
+        const sTop=ri*52+56; let bx2=sx+6;
+        while (bx2<sx+sw-10) {
+          const bw2=9+Math.floor((bx2*7+ri*13)%9);
+          const bh2=46-Math.floor((bx2*3+ri*5)%8);
+          const col=bookColors[(bi++)%bookColors.length];
+          const by2=sTop+(48-bh2);
+          ctx.fillStyle=col; ctx.fillRect(bx2,by2,bw2,bh2);
+          ctx.fillStyle='rgba(255,255,255,0.07)'; ctx.fillRect(bx2,by2,2,bh2);
+          ctx.fillStyle='rgba(255,220,100,0.18)'; ctx.fillRect(bx2,by2,bw2,2);
+          if ((bx2+ri)%5===0) { ctx.fillStyle='#C9A84C'; ctx.globalAlpha=0.6; ctx.fillRect(bx2+2,by2+bh2*0.35,bw2-4,2); ctx.globalAlpha=1; }
+          bx2+=bw2+1; bi++;
+        }
+      }
+      ctx.fillStyle='#2A1408';
+      ctx.fillRect(sx,52,6,335); ctx.fillRect(sx+sw-6,52,6,335);
+    }
+    shelf(0,237); shelf(663,237);
+
+    const fpX=295,fpY=58,fpW=310;
+    const stG=ctx.createLinearGradient(fpX,fpY,fpX+fpW,fpY);
+    stG.addColorStop(0,'#2C1E10'); stG.addColorStop(0.5,'#2E2012'); stG.addColorStop(1,'#2C1E10');
+    ctx.fillStyle=stG; ctx.fillRect(fpX,fpY,fpW,315);
+    ctx.save(); ctx.beginPath(); ctx.rect(fpX,fpY,fpW,315); ctx.clip();
+    for (let vi=0;vi<10;vi++) {
+      ctx.strokeStyle='rgba(80,50,20,0.12)'; ctx.lineWidth=0.8;
+      ctx.beginPath(); ctx.moveTo(fpX+(vi/10)*fpW,fpY);
+      for (let vy=fpY;vy<fpY+315;vy+=10) ctx.lineTo(fpX+(vi/10)*fpW+Math.sin(vy*0.05+vi)*7,vy);
+      ctx.stroke();
+    }
+    ctx.restore();
+    const mG=ctx.createLinearGradient(fpX-28,fpY,fpX-28,fpY+34);
+    mG.addColorStop(0,'#3E2814'); mG.addColorStop(1,'#1E1006');
+    ctx.fillStyle=mG; ctx.fillRect(fpX-28,fpY-14,fpW+56,34);
+    ctx.fillStyle='#4E3018'; ctx.fillRect(fpX-28,fpY-14,fpW+56,5);
+    ctx.fillStyle='rgba(0,0,0,0.3)'; ctx.fillRect(fpX-28,fpY+20,fpW+56,8);
+    for (let cx of [fpX+10,fpX+fpW-55]) {
+      const cG2=ctx.createLinearGradient(cx,0,cx+45,0);
+      cG2.addColorStop(0,'#241608'); cG2.addColorStop(0.4,'#3A2412'); cG2.addColorStop(1,'#1A1006');
+      ctx.fillStyle=cG2; ctx.fillRect(cx,fpY+20,45,210);
+      for (let fl=0;fl<5;fl++) { ctx.fillStyle='rgba(0,0,0,0.18)'; ctx.fillRect(cx+fl*9+2,fpY+20,4,210); }
+      ctx.fillStyle='#3A2810'; ctx.fillRect(cx-4,fpY+16,53,12);
+      ctx.fillStyle='#4A3418'; ctx.fillRect(cx-4,fpY+16,53,4);
+      ctx.fillStyle='#3A2810'; ctx.fillRect(cx-4,fpY+226,53,12);
+    }
+    const fbX=fpX+55,fbY=fpY+22,fbW=200,fbH=220;
+    ctx.fillStyle='#060403'; ctx.fillRect(fbX,fbY,fbW,fbH);
+    ctx.save(); ctx.beginPath(); ctx.rect(fbX,fbY,fbW,fbH); ctx.clip();
+    for (let br=fbY;br<fbY+fbH;br+=18) {
+      const odd=Math.floor((br-fbY)/18)%2===1;
+      for (let bkx=fbX-(odd?20:0);bkx<fbX+fbW;bkx+=40) {
+        ctx.fillStyle=`rgb(${28+Math.random()*8},${13+Math.random()*6},${4+Math.random()*4})`;
+        ctx.fillRect(bkx+1,br+1,38,16);
+        ctx.strokeStyle='#080402'; ctx.lineWidth=1;
+        ctx.strokeRect(bkx+1,br+1,38,16);
+      }
+    }
+    ctx.restore();
+    const eC=fbX+fbW/2, eY=fbY+fbH-22;
+    const ep=0.6+0.4*Math.sin(phase*3.7);
+    const eg=ctx.createRadialGradient(eC,eY,0,eC,eY,75);
+    eg.addColorStop(0,`rgba(200,80,0,${0.9*ep})`); eg.addColorStop(1,'rgba(50,10,0,0)');
+    ctx.fillStyle=eg; ctx.fillRect(fbX,fbY+fbH-40,fbW,40);
+    ctx.fillStyle='#1A1008'; ctx.fillRect(fbX,fbY+fbH-28,fbW,28);
+    function log(lx,ly,lw2,lh2,rot) {
+      ctx.save(); ctx.translate(lx,ly); ctx.rotate(rot);
+      ctx.fillStyle='#2A1208'; ctx.fillRect(-lw2/2,-lh2/2,lw2,lh2);
+      ctx.fillStyle='#A04020'; ctx.beginPath(); ctx.ellipse(-lw2/2,0,8,lh2/2,0,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle='#7A2A10'; ctx.beginPath(); ctx.ellipse(-lw2/2,0,5,lh2/2-3,0,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+    const fc=fbX+fbW/2;
+    log(fc-10,fbY+fbH-18,115,16,0.12); log(fc+20,fbY+fbH-23,95,14,-0.08);
+    function fire(ph) {
+      const fbase=fbY+fbH-28;
+      ctx.globalAlpha=0.7+0.15*Math.sin(ph*2.1);
+      const f1=ctx.createRadialGradient(fc,fbase-40,0,fc,fbase,65);
+      f1.addColorStop(0,'#FF8C00'); f1.addColorStop(0.5,'#CC4400'); f1.addColorStop(1,'rgba(80,0,0,0)');
+      ctx.fillStyle=f1;
+      ctx.beginPath(); ctx.moveTo(fc-65,fbase);
+      ctx.bezierCurveTo(fc-55+Math.sin(ph*1.3)*8,fbase-38,fc-18+Math.cos(ph*0.9)*12,fbase-82,fc+Math.sin(ph*1.7)*5,fbase-122);
+      ctx.bezierCurveTo(fc+18+Math.cos(ph*1.1)*12,fbase-82,fc+50+Math.sin(ph*0.8)*10,fbase-38,fc+65,fbase);
+      ctx.closePath(); ctx.fill();
+      ctx.globalAlpha=0.85+0.1*Math.cos(ph*2.7);
+      const f2=ctx.createRadialGradient(fc,fbase-28,0,fc,fbase,50);
+      f2.addColorStop(0,'#FFB020'); f2.addColorStop(0.5,'#FF5500'); f2.addColorStop(1,'rgba(120,20,0,0)');
+      ctx.fillStyle=f2;
+      ctx.beginPath(); ctx.moveTo(fc-50,fbase);
+      ctx.bezierCurveTo(fc-40+Math.cos(ph*1.9)*7,fbase-33,fc-10+Math.sin(ph*1.2)*10,fbase-74,fc+Math.cos(ph*2.3)*4,fbase-102);
+      ctx.bezierCurveTo(fc+16+Math.sin(ph*1.5)*10,fbase-74,fc+36+Math.cos(ph*1.0)*8,fbase-33,fc+50,fbase);
+      ctx.closePath(); ctx.fill();
+      ctx.globalAlpha=0.95;
+      const f3=ctx.createRadialGradient(fc,fbase-18,0,fc,fbase,38);
+      f3.addColorStop(0,'#FFEE80'); f3.addColorStop(0.35,'#FFB000'); f3.addColorStop(0.7,'#FF5000'); f3.addColorStop(1,'rgba(180,30,0,0)');
+      ctx.fillStyle=f3;
+      ctx.beginPath(); ctx.moveTo(fc-30,fbase);
+      ctx.bezierCurveTo(fc-25+Math.sin(ph*2.5)*5,fbase-28,fc-8+Math.cos(ph*1.8)*8,fbase-58,fc+Math.sin(ph*3.1)*3,fbase-80);
+      ctx.bezierCurveTo(fc+12+Math.cos(ph*2.2)*8,fbase-58,fc+22+Math.sin(ph*1.6)*5,fbase-28,fc+30,fbase);
+      ctx.closePath(); ctx.fill();
+      ctx.globalAlpha=0.7+0.2*Math.sin(ph*4);
+      const f4=ctx.createRadialGradient(fc,fbase-22,0,fc,fbase-8,20);
+      f4.addColorStop(0,'#FFFDE0'); f4.addColorStop(0.5,'#FFE060'); f4.addColorStop(1,'rgba(255,150,0,0)');
+      ctx.fillStyle=f4;
+      ctx.beginPath(); ctx.moveTo(fc-16,fbase);
+      ctx.bezierCurveTo(fc-13,fbase-28,fc-4,fbase-50,fc,fbase-60);
+      ctx.bezierCurveTo(fc+4,fbase-50,fc+13,fbase-28,fc+16,fbase);
+      ctx.closePath(); ctx.fill();
+      ctx.globalAlpha=1;
+    }
+    fire(phase);
+    ctx.strokeStyle='#1A0A04'; ctx.lineWidth=2.5;
+    for (let gx=fbX+18;gx<fbX+fbW-18;gx+=14) { ctx.beginPath(); ctx.moveTo(gx,fbY+fbH-28); ctx.lineTo(gx,fbY+fbH); ctx.stroke(); }
+    ctx.beginPath(); ctx.moveTo(fbX+12,fbY+fbH-26); ctx.lineTo(fbX+fbW-12,fbY+fbH-26); ctx.stroke();
+    ctx.strokeStyle='#2E1A08'; ctx.lineWidth=5;
+    ctx.beginPath(); ctx.arc(fbX+fbW/2,fbY+30,fbW/2,Math.PI,0); ctx.stroke();
+    ctx.fillStyle='#1E1008'; ctx.fillRect(fpX+80,fpY-80,fpW-160,66);
+    ctx.strokeStyle='#B89030'; ctx.lineWidth=6; ctx.strokeRect(fpX+80,fpY-80,fpW-160,66);
+    ctx.strokeStyle='#C9A84C'; ctx.lineWidth=2; ctx.strokeRect(fpX+88,fpY-72,fpW-176,50);
+    const pX2=fpX+93,pY2=fpY-70,pW2=fpW-186,pH2=42;
+    const pSky=ctx.createLinearGradient(pX2,pY2,pX2,pY2+pH2*0.6);
+    pSky.addColorStop(0,'#4A6A90'); pSky.addColorStop(1,'#6A8A60');
+    ctx.fillStyle=pSky; ctx.fillRect(pX2,pY2,pW2,pH2*0.6);
+    ctx.fillStyle='#4A6A38'; ctx.fillRect(pX2,pY2+pH2*0.5,pW2,pH2*0.5);
+    ctx.fillStyle='#5A7A48'; ctx.beginPath(); ctx.arc(pX2+pW2*0.3,pY2+pH2*0.6,pW2*0.2,Math.PI,0); ctx.fill();
+    ctx.fillStyle='#1A0E06'; ctx.fillRect(fpX+fpW/2-18,fpY-14,36,20);
+    ctx.fillStyle='#C9A84C'; ctx.beginPath(); ctx.arc(fpX+fpW/2,fpY-4,8,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#1A0E06'; ctx.beginPath(); ctx.arc(fpX+fpW/2,fpY-4,6,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='#C9A84C'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(fpX+fpW/2,fpY-4); ctx.lineTo(fpX+fpW/2,fpY-9); ctx.stroke();
+    for (let coff of [-68,63]) {
+      const cx2=fpX+fpW/2+coff;
+      ctx.fillStyle='#B8A030'; ctx.fillRect(cx2-5,fpY+12,10,10);
+      ctx.beginPath(); ctx.ellipse(cx2,fpY+14,8,3,0,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle='#EEE8C0'; ctx.fillRect(cx2-4,fpY-15,8,28);
+      const cf2=0.7+0.3*Math.sin(phase*5.3+coff);
+      ctx.fillStyle=`rgba(255,220,80,${cf2})`;
+      ctx.beginPath(); ctx.moveTo(cx2-3,fpY-15);
+      ctx.bezierCurveTo(cx2-4,fpY-25,cx2+4,fpY-30,cx2,fpY-34);
+      ctx.bezierCurveTo(cx2-4,fpY-30,cx2+3,fpY-25,cx2+3,fpY-15);
+      ctx.closePath(); ctx.fill();
+    }
+
+    const glow=0.9+0.1*Math.sin(phase*1.3);
+    const rg=ctx.createRadialGradient(450,380,0,450,380,580);
+    rg.addColorStop(0,`rgba(180,80,10,${0.18*glow})`);
+    rg.addColorStop(0.3,`rgba(140,50,5,${0.1*glow})`);
+    rg.addColorStop(1,'rgba(20,5,0,0)');
+    ctx.fillStyle=rg; ctx.fillRect(0,200,VW,VH-200);
+
+    const fg=ctx.createLinearGradient(0,385,0,VH);
+    fg.addColorStop(0,'#3A2010'); fg.addColorStop(1,'#1A0C04');
+    ctx.fillStyle=fg; ctx.fillRect(0,385,VW,VH-385);
+    for (let py of [405,428,455,490,540]) { ctx.strokeStyle='#150A04'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(0,py); ctx.lineTo(VW,py); ctx.stroke(); }
+    for (let px of [-80,60,180,310,450,590,720,860,1000]) { ctx.strokeStyle='#150A04'; ctx.lineWidth=0.8; ctx.beginPath(); ctx.moveTo(450+(px-450)*0.05,385); ctx.lineTo(px,VH); ctx.stroke(); }
+    const fr=ctx.createRadialGradient(450,400,0,450,420,260);
+    fr.addColorStop(0,`rgba(180,70,10,${0.22*glow})`); fr.addColorStop(1,'rgba(60,15,0,0)');
+    ctx.fillStyle=fr; ctx.fillRect(100,385,700,VH-385);
+
+    ctx.fillStyle='#6B1508';
+    ctx.beginPath(); ctx.ellipse(450,510,250,76,0,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='#B89030'; ctx.lineWidth=4;
+    ctx.beginPath(); ctx.ellipse(450,510,245,73,0,0,Math.PI*2); ctx.stroke();
+    ctx.strokeStyle='#C9A84C'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.ellipse(450,510,236,66,0,0,Math.PI*2); ctx.stroke();
+    ctx.fillStyle='rgba(180,120,30,0.12)';
+    ctx.beginPath(); ctx.ellipse(450,510,88,26,0,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='rgba(201,168,76,0.5)'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.ellipse(450,510,88,26,0,0,Math.PI*2); ctx.stroke();
+
+    function chair(bx,by) {
+      const fw=195,fh=175;
+      ctx.save(); ctx.translate(bx,by);
+      ctx.fillStyle='#1A0C04'; ctx.fillRect(18,fh-28,12,48); ctx.fillRect(fw-30,fh-28,12,48);
+      ctx.fillStyle='#2A1408'; ctx.fillRect(22,fh+8,11,38); ctx.fillRect(fw-33,fh+8,11,38);
+      const sG=ctx.createLinearGradient(0,fh*0.5,0,fh+10);
+      sG.addColorStop(0,'#A83020'); sG.addColorStop(1,'#6A1610');
+      ctx.fillStyle=sG;
+      ctx.beginPath(); ctx.roundRect(10,fh*0.55,fw-20,fh*0.45+10,[0,0,14,14]); ctx.fill();
+      for (let ti=0;ti<4;ti++) {
+        const tx=33+ti*(fw-66)/3,ty=fh*0.72;
+        ctx.fillStyle='#4A0E08'; ctx.beginPath(); ctx.arc(tx,ty,5,0,Math.PI*2); ctx.fill();
+        ctx.fillStyle='#6A1A0E'; ctx.beginPath(); ctx.arc(tx,ty,3,0,Math.PI*2); ctx.fill();
+        ctx.strokeStyle='rgba(50,10,5,0.5)'; ctx.lineWidth=0.8;
+        for (let ai=0;ai<8;ai++) { const a=ai/8*Math.PI*2; ctx.beginPath(); ctx.moveTo(tx+Math.cos(a)*5,ty+Math.sin(a)*5); ctx.lineTo(tx+Math.cos(a)*11,ty+Math.sin(a)*9); ctx.stroke(); }
+      }
+      const bkG=ctx.createLinearGradient(0,0,fw,fh*0.55);
+      bkG.addColorStop(0,'#B03828'); bkG.addColorStop(1,'#721810');
+      ctx.fillStyle=bkG;
+      ctx.beginPath(); ctx.roundRect(8,0,fw-16,fh*0.58,16); ctx.fill();
+      for (let tri=0;tri<3;tri++) for (let tci=0;tci<4;tci++) {
+        const tx=30+tci*(fw-60)/3,ty=20+tri*(fh*0.5)/2;
+        ctx.fillStyle='#4A0E08'; ctx.beginPath(); ctx.arc(tx,ty,6,0,Math.PI*2); ctx.fill();
+        ctx.fillStyle='#6A1A0E'; ctx.beginPath(); ctx.arc(tx,ty,4,0,Math.PI*2); ctx.fill();
+        ctx.strokeStyle='rgba(50,10,5,0.5)'; ctx.lineWidth=0.8;
+        if(tci<3){ctx.beginPath();ctx.moveTo(tx+6,ty);ctx.lineTo(tx+(fw-60)/6-5,ty);ctx.stroke();}
+        if(tri<2){ctx.beginPath();ctx.moveTo(tx,ty+6);ctx.lineTo(tx,ty+(fh*0.5)/4-5);ctx.stroke();}
+      }
+      ctx.fillStyle='rgba(200,80,40,0.06)'; ctx.fillRect(16,5,fw-32,28);
+      const aG=ctx.createLinearGradient(0,0,0,75);
+      aG.addColorStop(0,'#C04030'); aG.addColorStop(1,'#7A1C10');
+      ctx.fillStyle=aG;
+      ctx.beginPath(); ctx.roundRect(0,fh*0.2,20,fh*0.8,[11,11,7,7]); ctx.fill();
+      ctx.beginPath(); ctx.roundRect(fw-20,fh*0.2,20,fh*0.8,[11,11,7,7]); ctx.fill();
+      ctx.fillStyle='#C84838';
+      ctx.beginPath(); ctx.ellipse(10,fh*0.2+2,10,6,0,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(fw-10,fh*0.2+2,10,6,0,0,Math.PI*2); ctx.fill();
+      const pG=ctx.createLinearGradient(fw*0.3,8,fw*0.7,fh*0.45);
+      pG.addColorStop(0,'#D4B050'); pG.addColorStop(1,'#A07820');
+      ctx.fillStyle=pG;
+      ctx.beginPath(); ctx.roundRect(fw*0.28,10,fw*0.44,fh*0.36,10); ctx.fill();
+      ctx.fillStyle='#7A5010'; ctx.beginPath(); ctx.arc(fw/2,fh*0.22,5,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+    ctx.fillStyle='rgba(0,0,0,0.28)';
+    ctx.beginPath(); ctx.ellipse(185,540,105,19,0,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(715,540,105,19,0,0,Math.PI*2); ctx.fill();
+    chair(88,362); chair(618,362);
+
+    const oX=450,oY=498;
+    ctx.fillStyle='rgba(0,0,0,0.38)';
+    ctx.beginPath(); ctx.ellipse(oX,oY+26,105,22,0,0,Math.PI*2); ctx.fill();
+    const oS=ctx.createLinearGradient(oX-105,oY,oX+105,oY);
+    oS.addColorStop(0,'#1A0C04'); oS.addColorStop(0.5,'#2E1808'); oS.addColorStop(1,'#1A0C04');
+    ctx.fillStyle=oS; ctx.beginPath(); ctx.ellipse(oX,oY+14,105,30,0,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='#C9A84C'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.ellipse(oX,oY+11,100,26,0,0,Math.PI*2); ctx.stroke();
+    const oT=ctx.createRadialGradient(oX-20,oY-10,0,oX,oY,105);
+    oT.addColorStop(0,'#3A2010'); oT.addColorStop(1,'#1E0E06');
+    ctx.fillStyle=oT; ctx.beginPath(); ctx.ellipse(oX,oY,105,30,0,0,Math.PI*2); ctx.fill();
+    for (let ni=0;ni<22;ni++) { const ang=ni/22*Math.PI*2; ctx.fillStyle='#C9A84C'; ctx.beginPath(); ctx.arc(oX+Math.cos(ang)*100,oY+Math.sin(ang)*27,2,0,Math.PI*2); ctx.fill(); }
+    for (let ti=0;ti<6;ti++) {
+      const ang=ti/6*Math.PI*2,tr=50;
+      const tx2=oX+Math.cos(ang)*tr,ty2=oY+Math.sin(ang)*tr*0.28;
+      ctx.fillStyle='#140804'; ctx.beginPath(); ctx.arc(tx2,ty2,4,0,Math.PI*2); ctx.fill();
+      ctx.strokeStyle='rgba(10,5,2,0.5)'; ctx.lineWidth=0.8;
+      ctx.beginPath(); ctx.moveTo(oX,oY); ctx.lineTo(tx2,ty2); ctx.stroke();
+    }
+    let by3=oY-30;
+    for (let bk of [{w:72,h:13,c:'#1A3A7A'},{w:62,h:11,c:'#8B2500'},{w:48,h:10,c:'#C9A84C'}]) {
+      ctx.fillStyle=bk.c; ctx.fillRect(oX-bk.w/2,by3,bk.w,bk.h);
+      ctx.fillStyle='rgba(255,220,100,0.4)'; ctx.fillRect(oX-bk.w/2+5,by3+3,bk.w-10,2);
+      by3-=bk.h+1;
+    }
+
+    function plant(px2,py2) {
+      ctx.save(); ctx.translate(px2,py2);
+      ctx.fillStyle='#2A1408'; ctx.fillRect(-18,0,36,30);
+      ctx.fillStyle='#1A0C04'; ctx.fillRect(-14,5,28,25);
+      ctx.fillStyle='#3A1C0A'; ctx.beginPath(); ctx.ellipse(0,0,18,6,0,0,Math.PI*2); ctx.fill();
+      for (let l of [{r:-0.95,s:1.1},{r:-0.5,s:0.9},{r:-0.1,s:1.2},{r:0.35,s:1.0},{r:0.75,s:0.95},{r:1.1,s:0.85},{r:-0.7,s:0.8}]) {
+        ctx.save(); ctx.rotate(l.r); ctx.scale(l.s,l.s);
+        const lg=ctx.createLinearGradient(0,0,0,-80);
+        lg.addColorStop(0,'#1A4010'); lg.addColorStop(0.5,'#285A18'); lg.addColorStop(1,'#1E4A14');
+        ctx.fillStyle=lg;
+        ctx.beginPath(); ctx.moveTo(0,0);
+        ctx.bezierCurveTo(-20,-25,-28,-55,-8,-85);
+        ctx.bezierCurveTo(0,-75,0,-45,0,0); ctx.fill();
+        ctx.restore();
+      }
+      ctx.restore();
+    }
+    plant(58,395); plant(838,395);
+
+    const vig=ctx.createRadialGradient(450,350,140,450,350,640);
+    vig.addColorStop(0,'rgba(0,0,0,0)');
+    vig.addColorStop(0.65,'rgba(0,0,0,0.1)');
+    vig.addColorStop(1,'rgba(0,0,0,0.75)');
+    ctx.fillStyle=vig; ctx.fillRect(0,0,VW,VH);
+    const topS=ctx.createLinearGradient(0,0,0,100);
+    topS.addColorStop(0,'rgba(0,0,0,0.6)'); topS.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=topS; ctx.fillRect(0,0,VW,100);
+
+    ctx.restore();
+  }
+
+  function loop() {
+    t += 0.016;
+    draw(t);
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+</script>
+</body>
+</html>
