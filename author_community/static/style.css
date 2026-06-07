@@ -61,7 +61,7 @@ select option { background: var(--dark2); }
   padding: 12px 16px;
   background: var(--dark);
   border-bottom: 1px solid var(--border);
-  box-shadow: 0 2px 12px rgba(0,0,0,.5);
+  box-shadow: 0 2px 18px rgba(201,168,76,.08), 0 2px 12px rgba(0,0,0,.5);
 }
 .top-bar .logo {
   font-family: 'Playfair Display', serif;
@@ -205,6 +205,11 @@ select option { background: var(--dark2); }
   padding: 16px; box-shadow: var(--shadow);
   border: 1px solid var(--border);
   border-left: 4px solid transparent;
+  transition: box-shadow .25s, transform .2s;
+}
+.post-card:hover {
+  box-shadow: 0 4px 24px rgba(201, 168, 76, 0.12), var(--shadow);
+  transform: translateY(-1px);
 }
 .post-thought { border-left-color: #C9A84C; }
 .post-snap    { border-left-color: #3B82F6; }
@@ -422,6 +427,27 @@ select option { background: var(--dark2); }
   .quick-post-types { gap: 4px; }
   .quick-type { padding: 5px 9px; font-size: .72rem; }
 }
+
+/* ── WARM WELCOME BANNER ─────────────────────────────────────────── */
+.welcome-banner {
+  display: flex; align-items: center; justify-content: space-between;
+  background: linear-gradient(135deg, #2A1800 0%, #1E1000 100%);
+  border: 1px solid #6A4A10;
+  border-radius: var(--radius);
+  padding: 14px 18px; margin-bottom: 14px;
+  box-shadow: 0 0 18px rgba(201, 168, 76, 0.15), var(--shadow);
+}
+.welcome-text { display: flex; flex-direction: column; gap: 3px; }
+.welcome-greeting {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem; font-weight: 700;
+  color: var(--gold-light);
+}
+.welcome-affirmation {
+  font-size: .83rem; color: #C8A86A;
+  font-style: italic; line-height: 1.4;
+}
+.welcome-quill { font-size: 1.8rem; opacity: 0.7; }
 
 /* ── LOUNGE ILLUSTRATION ─────────────────────────────────────────── */
 .auth-page { background: #1A0D2E; }
