@@ -1,6 +1,7 @@
 import os
 import hashlib
 import sqlite3
+import base64
 from datetime import datetime
 from functools import wraps
 from flask import (
@@ -346,15 +347,29 @@ def edit_profile():
     db = get_db()
     user = current_user()
     if request.method == 'POST':
+        avatar_url = user['avatar_url'] or ''
+
+        # Handle photo upload from phone
+        if 'avatar_file' in request.files:
+            file = request.files['avatar_file']
+            if file and file.filename:
+                file_data = file.read()
+                if len(file_data) <= 5 * 1024 * 1024:  # 5MB limit
+                    mimetype = file.content_type or 'image/jpeg'
+                    b64 = base64.b64encode(file_data).decode('utf-8')
+                    avatar_url = f"data:{mimetype};base64,{b64}"
+                else:
+                    flash('Photo too large. Please use a photo under 5MB.', 'error')
+
         db.execute('UPDATE users SET display_name=?,bio=?,genre=?,avatar_url=?,website=? WHERE id=?',
                    (request.form.get('display_name','').strip(),
                     request.form.get('bio','').strip(),
                     request.form.get('genre','').strip(),
-                    request.form.get('avatar_url','').strip(),
+                    avatar_url,
                     request.form.get('website','').strip(),
                     user['id']))
         db.commit()
-        flash('Profile updated!', 'success')
+        flash('Profile updated! ✨', 'success')
         return redirect(url_for('profile', username=user['username']))
     return render_template('edit_profile.html', user=user)
 
@@ -378,8 +393,3 @@ def follow(username):
     db.commit()
     count = db.execute('SELECT COUNT(*) as c FROM follows WHERE following_id=?', (target['id'],)).fetchone()['c']
     return jsonify({'following': following, 'follower_count': count})
-
-if __name__ == '__main__':
-    init_db()
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=False)
