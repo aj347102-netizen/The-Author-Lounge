@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <title>Ink & Pages{% block title %}{% endblock %}</title>
+  <title>The Author Lounge{% block title %}{% endblock %}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
@@ -11,7 +11,7 @@
 <body>
   {% if user %}
   <header class="top-bar">
-    <a href="{{ url_for('feed') }}" class="logo">🖊️ Ink & Pages</a>
+    <a href="{{ url_for('feed') }}" class="logo">🖊️ The Author Lounge</a>
     <a href="{{ url_for('create_post') }}" class="btn-post">+ Post</a>
   </header>
   {% endif %}
@@ -46,5 +46,4 @@
   {% endif %}
 
   <script src="{{ url_for('static', filename='app.js') }}"></script>
-</body>
-</html>
+</bo
