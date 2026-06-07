@@ -32,11 +32,16 @@
     <div class="form-group">
       <label>Profile Photo 📸</label>
       {% if user['avatar_url'] %}
-      <img src="{{ user['avatar_url'] }}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;border:3px solid #C9A84C;display:block;margin-bottom:10px;">
+      <img src="{{ user['avatar_url'] }}" id="preview" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #C9A84C;display:block;margin-bottom:12px;">
+      {% else %}
+      <img id="preview" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #C9A84C;display:none;margin-bottom:12px;">
       {% endif %}
-      <input type="file" name="avatar_file" accept="image/*"
-             style="background:#2A1545;color:#E8E0D0;padding:10px;border-radius:10px;border:1.5px solid #4A2870;width:100%;">
-      <small>Choose a photo from your library or take one 📱</small>
+      <input type="file" name="avatar_file" accept="image/*" id="avatar_input" style="display:none;">
+      <button type="button" onclick="document.getElementById('avatar_input').click()"
+        style="width:100%;padding:14px;background:#3A2260;color:#C9A84C;border:2px solid #C9A84C;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;">
+        📷 Choose Photo from Library
+      </button>
+      <small id="file-name" style="display:block;margin-top:6px;color:#9A7ABB;">No photo selected</small>
     </div>
 
     <div class="form-group">
@@ -48,4 +53,20 @@
     <button type="submit" class="btn-primary btn-full">Save Changes ✨</button>
   </form>
 </div>
+
+<script>
+document.getElementById('avatar_input').addEventListener('change', function() {
+  const file = this.files[0];
+  if (file) {
+    document.getElementById('file-name').textContent = '✅ ' + file.name;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const preview = document.getElementById('preview');
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+});
+</script>
 {% endblock %}
