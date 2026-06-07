@@ -5,8 +5,8 @@
 {% if not user %}
 <div class="hero">
   <div class="hero-logo">🖊️</div>
-  <h1>Ink & Pages</h1>
-  <p>The social platform for authors — share your journey, connect with readers and writers.</p>
+  <h1>The Author Lounge</h1>
+  <p>A community built for authors — share your journey, post reels & snaps, announce book signings, and connect with writers worldwide.</p>
   <div class="hero-actions">
     <a href="{{ url_for('register') }}" class="btn-primary">Join Free</a>
     <a href="{{ url_for('login') }}" class="btn-outline">Sign In</a>
@@ -50,7 +50,6 @@
         {% endif %}
       </span>
     </div>
-
     {% if post.post_type == 'event' %}
     <div class="event-banner">
       <div class="event-icon">📅</div>
@@ -60,7 +59,6 @@
       </div>
     </div>
     {% endif %}
-
     {% if post.media_url and post.post_type == 'snap' %}
     <div class="post-media">
       <img src="{{ post.media_url }}" alt="Post image" loading="lazy" onerror="this.style.display='none'">
@@ -70,9 +68,7 @@
       <video src="{{ post.media_url }}" controls preload="metadata" style="width:100%;border-radius:8px;"></video>
     </div>
     {% endif %}
-
     <div class="post-content">{{ post.content }}</div>
-
     <div class="post-actions">
       {% if user %}
       <button class="action-btn like-btn {% if post.user_liked %}liked{% endif %}"
@@ -95,7 +91,7 @@
   <div class="empty-icon">📚</div>
   <h3>No posts yet</h3>
   {% if user %}
-  <p>Be the first to share something with the community!</p>
+  <p>Be the first to share something!</p>
   <a href="{{ url_for('create_post') }}" class="btn-primary">Write Your First Post</a>
   {% else %}
   <p>Join to start reading and posting.</p>
