@@ -1,99 +1,51 @@
 {% extends 'base.html' %}
-{% block title %} — {{ author.display_name }}{% endblock %}
+{% block title %} — Edit Profile{% endblock %}
 {% block content %}
-<div class="profile-hero">
-  <div class="profile-cover"></div>
-  <div class="profile-info">
-    {% if author.avatar_url %}
-      <img src="{{ author.avatar_url }}" class="profile-avatar" alt="{{ author.display_name }}">
-    {% else %}
-      <div class="profile-avatar profile-avatar-initial">{{ author.display_name[0] }}</div>
-    {% endif %}
-    <div class="profile-meta">
-      <h2 class="profile-name">{{ author.display_name }}</h2>
-      <p class="profile-username">@{{ author.username }}</p>
-      {% if author.genre %}<span class="genre-badge">{{ author.genre }}</span>{% endif %}
-    </div>
-  </div>
-
-  <div class="profile-stats">
-    <div class="stat"><span class="stat-num">{{ posts|length }}</span><span class="stat-label">Posts</span></div>
-    <div class="stat"><span class="stat-num">{{ follower_count }}</span><span class="stat-label">Followers</span></div>
-    <div class="stat"><span class="stat-num">{{ following_count }}</span><span class="stat-label">Following</span></div>
-  </div>
-
-  {% if author.bio %}<p class="profile-bio">{{ author.bio }}</p>{% endif %}
-  {% if author.website %}<a href="{{ author.website }}" class="profile-website" target="_blank">🔗 {{ author.website }}</a>{% endif %}
-
-  <div class="profile-actions">
-    {% if is_me %}
-      <a href="{{ url_for('edit_profile') }}" class="btn-outline btn-sm">Edit Profile</a>
-    {% elif user %}
-      <button class="follow-btn {% if is_following %}following{% endif %}"
-              data-username="{{ author.username }}"
-              data-followers="{{ follower_count }}">
-        {% if is_following %}✓ Following{% else %}+ Follow{% endif %}
-      </button>
-    {% endif %}
-  </div>
+<div class="page-header">
+  <a href="{{ url_for('profile', username=user['username']) }}" class="back-btn">← Back</a>
+  <h2>Edit Profile</h2>
 </div>
 
-<div class="profile-posts">
-  {% if posts %}
-    {% for post in posts %}
-    <article class="post-card post-{{ post.post_type }}">
-      <div class="post-header">
-        <div class="post-type-info">
-          <span class="post-type-badge badge-{{ post.post_type }}">
-            {% if post.post_type == 'thought' %}💭{% elif post.post_type == 'snap' %}📸{% elif post.post_type == 'reel' %}🎬{% elif post.post_type == 'event' %}📅{% endif %}
-          </span>
-          <span class="post-time">{{ post.time_ago }}</span>
-        </div>
-        {% if is_me %}
-        <form method="POST" action="{{ url_for('delete_post', post_id=post.id) }}" class="delete-form">
-          <button type="submit" class="delete-btn" onclick="return confirm('Delete this post?')">🗑</button>
-        </form>
-        {% endif %}
-      </div>
+<div class="auth-card" style="margin-top:1rem;">
+  <form method="POST" action="{{ url_for('edit_profile') }}" enctype="multipart/form-data">
 
-      {% if post.post_type == 'event' and post.event_date %}
-      <div class="event-banner">
-        <div class="event-icon">📅</div>
-        <div class="event-details">
-          <div class="event-date">{{ post.event_date }}</div>
-          {% if post.event_location %}<div class="event-location">📍 {{ post.event_location }}</div>{% endif %}
-        </div>
-      </div>
+    <div class="form-group">
+      <label>Display Name</label>
+      <input type="text" name="display_name" value="{{ user['display_name'] }}" required>
+    </div>
+
+    <div class="form-group">
+      <label>Bio</label>
+      <textarea name="bio" rows="4">{{ user['bio'] or '' }}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Genre</label>
+      <select name="genre">
+        <option value="">Select genre</option>
+        {% for g in ['Fiction','Non-Fiction','Romance','Mystery & Thriller','Fantasy & Sci-Fi','Historical Fiction','Self-Help','Young Adult',"Children's",'Poetry','Biography','Horror','Other'] %}
+        <option {% if user['genre'] == g %}selected{% endif %}>{{ g }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Profile Photo 📸</label>
+      {% if user['avatar_url'] %}
+      <img src="{{ user['avatar_url'] }}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;border:3px solid #C9A84C;display:block;margin-bottom:10px;">
       {% endif %}
+      <input type="file" name="avatar_file" accept="image/*" capture="user"
+             style="background:#2A1545;color:#E8E0D0;padding:10px;border-radius:10px;border:1.5px solid #4A2870;width:100%;">
+      <small>Upload a photo from your phone or camera 📱</small>
+    </div>
 
-      {% if post.media_url and post.post_type == 'snap' %}
-      <div class="post-media"><img src="{{ post.media_url }}" alt="Post image" loading="lazy" onerror="this.style.display='none'"></div>
-      {% elif post.media_url and post.post_type == 'reel' %}
-      <div class="post-media"><video src="{{ post.media_url }}" controls preload="metadata" style="width:100%;border-radius:8px;"></video></div>
-      {% endif %}
+    <div class="form-group">
+      <label>Website 🌐</label>
+      <input type="text" name="website" value="{{ user['website'] or '' }}" placeholder="yoursite.com">
+      <small>Your author website or social link</small>
+    </div>
 
-      <div class="post-content">{{ post.content }}</div>
-
-      <div class="post-actions">
-        {% if user %}
-        <button class="action-btn like-btn {% if post.user_liked %}liked{% endif %}"
-                data-post-id="{{ post.id }}" data-count="{{ post.like_count }}">
-          <span class="action-icon">{% if post.user_liked %}❤️{% else %}🤍{% endif %}</span>
-          <span class="like-count">{{ post.like_count }}</span>
-        </button>
-        {% else %}
-        <span class="action-btn">🤍 {{ post.like_count }}</span>
-        {% endif %}
-        <a href="{{ url_for('view_post', post_id=post.id) }}" class="action-btn">💬 {{ post.comment_count }}</a>
-      </div>
-    </article>
-    {% endfor %}
-  {% else %}
-  <div class="empty-state">
-    <div class="empty-icon">✍️</div>
-    <h3>No posts yet</h3>
-    {% if is_me %}<a href="{{ url_for('create_post') }}" class="btn-primary">Write Something</a>{% endif %}
-  </div>
-  {% endif %}
+    <button type="submit" class="btn-primary btn-full">Save Changes ✨</button>
+  </form>
 </div>
 {% endblock %}
