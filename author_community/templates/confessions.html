@@ -1,0 +1,89 @@
+html{% extends 'base.html' %}
+{% block title %} — Confessions{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h2>🤫 Confessions</h2>
+</div>
+<p class="section-desc">Anonymous confessions from readers & writers. No names, no judgment.</p>
+
+<!-- Post a Confession -->
+<div class="create-post-card" style="margin-bottom:16px;">
+  <form method="POST" action="{{ url_for('post_confession') }}">
+    <div class="form-group">
+      <label>Your anonymous confession</label>
+      <textarea name="content" rows="3" maxlength="500"
+        placeholder="I secretly reread the same book 10 times… confess something!"></textarea>
+      <div class="char-count"><span id="conf-count">0</span>/500</div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <select name="category" style="flex:1;min-width:140px;">
+        <option value="writer">✍️ Writer Confession</option>
+        <option value="reader">📖 Reader Confession</option>
+        <option value="advice">💬 Need Advice</option>
+      </select>
+      <button type="submit" class="btn-primary btn-sm">🤫 Confess</button>
+    </div>
+  </form>
+</div>
+
+<!-- Filter tabs -->
+<div class="filter-tabs">
+  <a href="{{ url_for('confessions') }}?cat=all" class="filter-tab {% if category=='all' %}active{% endif %}">All</a>
+  <a href="{{ url_for('confessions') }}?cat=writer" class="filter-tab {% if category=='writer' %}active{% endif %}">✍️ Writers</a>
+  <a href="{{ url_for('confessions') }}?cat=reader" class="filter-tab {% if category=='reader' %}active{% endif %}">📖 Readers</a>
+  <a href="{{ url_for('confessions') }}?cat=advice" class="filter-tab {% if category=='advice' %}active{% endif %}">💬 Advice</a>
+</div>
+
+<!-- Confessions List -->
+<div class="feed" style="margin-top:14px;">
+  {% for c in confessions %}
+  <div class="confession-card">
+    <div class="confession-category">
+      {% if c.category == 'writer' %}✍️ Writer
+      {% elif c.category == 'reader' %}📖 Reader
+      {% else %}💬 Advice{% endif %}
+    </div>
+    <p class="confession-text">{{ c.content }}</p>
+    <div class="confession-footer">
+      <span class="confession-time">{{ c.time_ago }} ago</span>
+      <button class="conf-like-btn" data-id="{{ c.id }}" onclick="likeConfession({{ c.id }}, this)">
+        🤍 <span class="conf-count">{{ c.like_count }}</span>
+      </button>
+    </div>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">🤫</div>
+    <h3>No confessions yet</h3>
+    <p>Be the first to share — it's anonymous!</p>
+  </div>
+  {% endfor %}
+</div>
+
+<script>
+  const ta = document.querySelector('textarea[name="content"]');
+  if (ta) {
+    ta.addEventListener('input', () => {
+      document.getElementById('conf-count').textContent = ta.value.length;
+    });
+  }
+
+  function likeConfession(id, btn) {
+    fetch(`/confessions/${id}/like`, { method: 'POST' })
+      .then(r => r.json())
+      .then(d => {
+        btn.innerHTML = '';
+        const heart = document.createElement('span');
+        heart.textContent = '❤️ ';
+        const count = document.createElement('span');
+        count.className = 'conf-count';
+        count.textContent = d.count;
+        btn.appendChild(heart);
+        btn.appendChild(count);
+        btn.disabled = true;
+      });
+  }
+</script>
+
+{% endblock %}
