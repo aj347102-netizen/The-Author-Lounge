@@ -1,0 +1,75 @@
+html{% extends 'base.html' %}
+{% block title %} — Coffee Talk{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h2>☕ Coffee Talk</h2>
+  {% if user %}
+  <a href="{{ url_for('create_topic') }}" class="btn-primary btn-sm">+ New Topic</a>
+  {% endif %}
+</div>
+<p class="section-desc">Discussions, interviews, Q&As & weekly topics for the author community.</p>
+
+<!-- Filter Tabs -->
+<div class="filter-tabs">
+  <a href="{{ url_for('coffee_talk') }}?cat=all"
+     class="filter-tab {% if category=='all' %}active{% endif %}">All</a>
+  <a href="{{ url_for('coffee_talk') }}?cat=general"
+     class="filter-tab {% if category=='general' %}active{% endif %}">💬 General</a>
+  <a href="{{ url_for('coffee_talk') }}?cat=interview"
+     class="filter-tab {% if category=='interview' %}active{% endif %}">🎤 Interviews</a>
+  <a href="{{ url_for('coffee_talk') }}?cat=qa"
+     class="filter-tab {% if category=='qa' %}active{% endif %}">❓ Q&A</a>
+  <a href="{{ url_for('coffee_talk') }}?cat=weekly"
+     class="filter-tab {% if category=='weekly' %}active{% endif %}">📅 Weekly</a>
+</div>
+
+<!-- Topics List -->
+<div class="feed" style="margin-top:14px;">
+  {% for topic in topics %}
+  <a href="{{ url_for('view_topic', topic_id=topic.id) }}" style="text-decoration:none;">
+  <div class="post-card" style="cursor:pointer;">
+    <div class="post-header">
+      <a href="{{ url_for('profile', username=topic.username) }}" class="post-author"
+         onclick="event.stopPropagation()">
+        {% if topic.avatar_url %}
+        <img src="{{ topic.avatar_url }}" alt="{{ topic.display_name }}" class="avatar">
+        {% else %}
+        <div class="avatar avatar-initial">{{ topic.display_name[0].upper() }}</div>
+        {% endif %}
+        <div class="post-author-info">
+          <span class="author-name">{{ topic.display_name }}</span>
+          <span class="author-meta">{{ topic.time_ago }} ago</span>
+        </div>
+      </a>
+      <span class="post-type-badge badge-event">
+        {% if topic.category == 'interview' %}🎤 Interview
+        {% elif topic.category == 'qa' %}❓ Q&A
+        {% elif topic.category == 'weekly' %}📅 Weekly
+        {% else %}💬 Discussion{% endif %}
+      </span>
+    </div>
+
+    <h3 class="writing-title" style="margin-top:8px;color:var(--text);">{{ topic.title }}</h3>
+    <p class="post-content">{{ topic.content[:180] }}{% if topic.content|length > 180 %}…{% endif %}</p>
+
+    <div class="post-actions">
+      <span class="action-btn">💬 {{ topic.reply_count }} repl{% if topic.reply_count == 1 %}y{% else %}ies{% endif %}</span>
+      <span class="action-btn" style="margin-left:auto;color:var(--gold);">Read →</span>
+    </div>
+  </div>
+  </a>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">☕</div>
+    <h3>No topics yet</h3>
+    {% if user %}
+    <a href="{{ url_for('create_topic') }}" class="btn-primary">Start a Discussion</a>
+    {% else %}
+    <p>Log in to start a conversation.</p>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}
