@@ -1,0 +1,46 @@
+html{% extends 'base.html' %}
+{% block title %} — {{ other_user.display_name }}{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <a href="{{ url_for('messages') }}" class="back-btn">← Messages</a>
+  <a href="{{ url_for('profile', username=other_user.username) }}" class="convo-header-link">
+    {% if other_user.avatar_url %}
+    <img src="{{ other_user.avatar_url }}" alt="{{ other_user.display_name }}" class="avatar sm">
+    {% else %}
+    <div class="avatar avatar-initial sm">{{ other_user.display_name[0].upper() }}</div>
+    {% endif %}
+    <span style="font-weight:600;color:var(--gold);">{{ other_user.display_name }}</span>
+  </a>
+</div>
+
+<!-- Chat Thread -->
+<div class="chat-thread" id="chat-thread">
+  {% if messages %}
+    {% for msg in messages %}
+    <div class="chat-msg {% if msg.sender_id == user.id %}mine{% else %}theirs{% endif %}">
+      <div class="chat-bubble">{{ msg.content }}</div>
+      <div class="chat-time">{{ msg.time_ago }} ago</div>
+    </div>
+    {% endfor %}
+  {% else %}
+  <div class="empty-state sm" style="margin-top:60px;">
+    <p>No messages yet — say hello! 👋</p>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Send Message Form -->
+<form method="POST" action="{{ url_for('conversation', username=other_user.username) }}" class="chat-form">
+  <input type="text" name="content" class="chat-input"
+         placeholder="Write a message…" autocomplete="off" required>
+  <button type="submit" class="chat-send">Send ➤</button>
+</form>
+
+<script>
+  // Auto-scroll to bottom of chat
+  const thread = document.getElementById('chat-thread');
+  if (thread) thread.scrollTop = thread.scrollHeight;
+</script>
+
+{% endblock %}
