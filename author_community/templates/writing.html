@@ -1,0 +1,85 @@
+html{% extends 'base.html' %}
+{% block title %} — Community Writing{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h2>✍️ Community Writing</h2>
+  {% if user %}
+  <a href="{{ url_for('submit_writing') }}" class="btn-primary btn-sm">+ Share</a>
+  {% endif %}
+</div>
+<p class="section-desc">Stories, chapters, poetry & excerpts from our author community.</p>
+
+<!-- Filter Tabs -->
+<div class="filter-tabs">
+  <a href="{{ url_for('writing') }}?type=all"
+     class="filter-tab {% if piece_type=='all' %}active{% endif %}">All</a>
+  <a href="{{ url_for('writing') }}?type=story"
+     class="filter-tab {% if piece_type=='story' %}active{% endif %}">📖 Stories</a>
+  <a href="{{ url_for('writing') }}?type=chapter"
+     class="filter-tab {% if piece_type=='chapter' %}active{% endif %}">📑 Chapters</a>
+  <a href="{{ url_for('writing') }}?type=poem"
+     class="filter-tab {% if piece_type=='poem' %}active{% endif %}">🌹 Poetry</a>
+  <a href="{{ url_for('writing') }}?type=excerpt"
+     class="filter-tab {% if piece_type=='excerpt' %}active{% endif %}">✂️ Excerpts</a>
+</div>
+
+<!-- Writing Feed -->
+<div class="feed" style="margin-top:14px;">
+  {% for piece in pieces %}
+  <div class="post-card">
+    <div class="post-header">
+      <a href="{{ url_for('profile', username=piece.username) }}" class="post-author">
+        {% if piece.avatar_url %}
+        <img src="{{ piece.avatar_url }}" alt="{{ piece.display_name }}" class="avatar">
+        {% else %}
+        <div class="avatar avatar-initial">{{ piece.display_name[0].upper() }}</div>
+        {% endif %}
+        <div class="post-author-info">
+          <span class="author-name">{{ piece.display_name }}</span>
+          <span class="author-meta">{{ piece.time_ago }} ago</span>
+        </div>
+      </a>
+      <span class="post-type-badge badge-thought">
+        {% if piece.piece_type == 'story' %}📖
+        {% elif piece.piece_type == 'chapter' %}📑
+        {% elif piece.piece_type == 'poem' %}🌹
+        {% else %}✂️{% endif %}
+        {{ piece.piece_type | capitalize }}
+      </span>
+    </div>
+
+    <h3 class="writing-title">
+      <a href="{{ url_for('view_writing', piece_id=piece.id) }}" style="color:var(--gold);text-decoration:none;">
+        {{ piece.title }}
+      </a>
+    </h3>
+    {% if piece.genre %}<span class="genre-badge sm">{{ piece.genre }}</span>{% endif %}
+    <p class="post-content" style="margin-top:8px;">{{ piece.excerpt }}…</p>
+
+    <div class="post-actions">
+      <a href="{{ url_for('view_writing', piece_id=piece.id) }}" class="action-btn">
+        🤍 {{ piece.like_count }}
+      </a>
+      <a href="{{ url_for('view_writing', piece_id=piece.id) }}" class="action-btn">
+        💬 {{ piece.comment_count }}
+      </a>
+      <a href="{{ url_for('view_writing', piece_id=piece.id) }}" class="action-btn" style="margin-left:auto;">
+        Read More →
+      </a>
+    </div>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">✍️</div>
+    <h3>Nothing here yet</h3>
+    {% if user %}
+    <a href="{{ url_for('submit_writing') }}" class="btn-primary">Share Your Writing</a>
+    {% else %}
+    <p>Log in to share your work with the community.</p>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}
