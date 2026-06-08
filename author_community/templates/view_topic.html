@@ -1,0 +1,82 @@
+html{% extends 'base.html' %}
+{% block title %} — {{ topic.title }}{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <a href="{{ url_for('coffee_talk') }}" class="back-btn">← Coffee Talk</a>
+</div>
+
+<div class="post-card post-full">
+  <div class="post-header">
+    <a href="{{ url_for('profile', username=topic.username) }}" class="post-author">
+      {% if topic.avatar_url %}
+      <img src="{{ topic.avatar_url }}" alt="{{ topic.display_name }}" class="avatar">
+      {% else %}
+      <div class="avatar avatar-initial">{{ topic.display_name[0].upper() }}</div>
+      {% endif %}
+      <div class="post-author-info">
+        <span class="author-name">{{ topic.display_name }}</span>
+        <span class="author-meta">{{ topic.time_ago }} ago</span>
+      </div>
+    </a>
+    <div class="post-type-info">
+      <span class="post-type-badge badge-event">
+        {% if topic.category == 'interview' %}🎤 Interview
+        {% elif topic.category == 'qa' %}❓ Q&A
+        {% elif topic.category == 'weekly' %}📅 Weekly
+        {% else %}💬 Discussion{% endif %}
+      </span>
+      {% if user and user['id'] == topic.user_id %}
+      <form method="POST" action="{{ url_for('delete_topic', topic_id=topic.id) }}" class="delete-form" onsubmit="return confirm('Delete?')">
+        <button type="submit" class="delete-btn">🗑</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+  <h2 class="writing-full-title">{{ topic.title }}</h2>
+  <p class="post-content">{{ topic.content }}</p>
+</div>
+
+<!-- Replies -->
+<div class="comments-section">
+  <div class="comments-title">Replies ({{ replies|length }})</div>
+
+  {% if user %}
+  <form method="POST" action="{{ url_for('view_topic', topic_id=topic.id) }}" class="comment-form">
+    <div class="comment-input-row">
+      {% if user.avatar_url %}
+      <img src="{{ user.avatar_url }}" alt="{{ user.display_name }}" class="avatar sm">
+      {% else %}
+      <div class="avatar avatar-initial sm">{{ user.display_name[0].upper() }}</div>
+      {% endif %}
+      <input type="text" name="content" class="comment-input" placeholder="Share your thoughts…" required>
+      <button type="submit" class="btn-primary btn-sm">Reply</button>
+    </div>
+  </form>
+  {% else %}
+  <p style="color:var(--muted);font-size:.88rem;margin-bottom:16px;">
+    <a href="{{ url_for('login') }}">Log in</a> to join the discussion.
+  </p>
+  {% endif %}
+
+  <div class="comments-list">
+    {% for r in replies %}
+    <div class="comment">
+      {% if r.avatar_url %}
+      <img src="{{ r.avatar_url }}" alt="{{ r.display_name }}" class="avatar sm">
+      {% else %}
+      <div class="avatar avatar-initial sm">{{ r.display_name[0].upper() }}</div>
+      {% endif %}
+      <div class="comment-body">
+        <a href="{{ url_for('profile', username=r.username) }}" class="comment-author">{{ r.display_name }}</a>
+        <span class="comment-text">{{ r.content }}</span>
+        <span class="comment-time">{{ r.time_ago }} ago</span>
+      </div>
+    </div>
+    {% else %}
+    <div class="empty-state sm"><p>No replies yet — start the conversation!</p></div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}
