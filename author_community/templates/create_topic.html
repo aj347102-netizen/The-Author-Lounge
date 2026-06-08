@@ -1,0 +1,40 @@
+html{% extends 'base.html' %}
+{% block title %} — New Topic{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <a href="{{ url_for('coffee_talk') }}" class="back-btn">← Coffee Talk</a>
+</div>
+
+<div class="create-post-card">
+  <h2 style="margin-bottom:18px;">☕ Start a Discussion</h2>
+  <form method="POST" action="{{ url_for('create_topic') }}">
+
+    <div class="form-group">
+      <label>Category *</label>
+      <select name="category" required>
+        <option value="general">💬 General Discussion</option>
+        <option value="interview">🎤 Interview</option>
+        <option value="qa">❓ Q&A</option>
+        <option value="weekly">📅 Weekly Topic</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Title *</label>
+      <input type="text" name="title"
+             placeholder="e.g. How do you beat writer's block?" required>
+    </div>
+
+    <div class="form-group">
+      <label>What's on your mind? *</label>
+      <textarea name="content" rows="6"
+        placeholder="Share your thoughts, question, or topic with the community…"
+        required></textarea>
+    </div>
+
+    <button type="submit" class="btn-primary" style="width:100%;">☕ Post Topic</button>
+  </form>
+</div>
+
+{% endblock %}
