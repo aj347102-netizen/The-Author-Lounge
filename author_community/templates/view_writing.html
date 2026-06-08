@@ -1,0 +1,114 @@
+html{% extends 'base.html' %}
+{% block title %} — {{ piece.title }}{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <a href="{{ url_for('writing') }}" class="back-btn">← Writing</a>
+</div>
+
+<!-- Full Piece -->
+<div class="post-card post-full">
+  <div class="post-header">
+    <a href="{{ url_for('profile', username=piece.username) }}" class="post-author">
+      {% if piece.avatar_url %}
+      <img src="{{ piece.avatar_url }}" alt="{{ piece.display_name }}" class="avatar">
+      {% else %}
+      <div class="avatar avatar-initial">{{ piece.display_name[0].upper() }}</div>
+      {% endif %}
+      <div class="post-author-info">
+        <span class="author-name">{{ piece.display_name }}</span>
+        <span class="author-meta">{{ piece.time_ago }} ago</span>
+      </div>
+    </a>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="post-type-badge badge-thought">
+        {% if piece.piece_type == 'story' %}📖
+        {% elif piece.piece_type == 'chapter' %}📑
+        {% elif piece.piece_type == 'poem' %}🌹
+        {% else %}✂️{% endif %}
+        {{ piece.piece_type | capitalize }}
+      </span>
+      {% if user and user['id'] == piece.user_id %}
+      <form method="POST" action="{{ url_for('delete_writing', piece_id=piece.id) }}"
+            class="delete-form" onsubmit="return confirm('Delete this piece?')">
+        <button type="submit" class="delete-btn">🗑</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+
+  <h2 class="writing-full-title">{{ piece.title }}</h2>
+  {% if piece.genre %}<span class="genre-badge" style="margin-bottom:14px;display:inline-block;">{{ piece.genre }}</span>{% endif %}
+  <div class="writing-full-content">{{ piece.content }}</div>
+
+  <div class="post-actions" style="margin-top:16px;">
+    {% if user %}
+    <button class="action-btn like-btn {% if piece.user_liked %}liked{% endif %}"
+            id="like-btn"
+            onclick="likeWriting({{ piece.id }}, this)">
+      <span class="action-icon">{% if piece.user_liked %}❤️{% else %}🤍{% endif %}</span>
+      <span class="like-count">{{ piece.like_count }}</span>
+    </button>
+    {% else %}
+    <span class="action-btn">🤍 {{ piece.like_count }}</span>
+    {% endif %}
+    <span class="action-btn">💬 {{ comments|length }}</span>
+  </div>
+</div>
+
+<!-- Feedback / Comments -->
+<div class="comments-section">
+  <div class="comments-title">Feedback ({{ comments|length }})</div>
+
+  {% if user %}
+  <form method="POST" action="{{ url_for('comment_writing', piece_id=piece.id) }}" class="comment-form">
+    <div class="comment-input-row">
+      {% if user.avatar_url %}
+      <img src="{{ user.avatar_url }}" alt="{{ user.display_name }}" class="avatar sm">
+      {% else %}
+      <div class="avatar avatar-initial sm">{{ user.display_name[0].upper() }}</div>
+      {% endif %}
+      <input type="text" name="content" class="comment-input"
+             placeholder="Share your feedback…" required>
+      <button type="submit" class="btn-primary btn-sm">Post</button>
+    </div>
+  </form>
+  {% else %}
+  <p style="color:var(--muted);font-size:.88rem;margin-bottom:16px;">
+    <a href="{{ url_for('login') }}">Log in</a> to leave feedback.
+  </p>
+  {% endif %}
+
+  <div class="comments-list">
+    {% for c in comments %}
+    <div class="comment">
+      {% if c.avatar_url %}
+      <img src="{{ c.avatar_url }}" alt="{{ c.display_name }}" class="avatar sm">
+      {% else %}
+      <div class="avatar avatar-initial sm">{{ c.display_name[0].upper() }}</div>
+      {% endif %}
+      <div class="comment-body">
+        <a href="{{ url_for('profile', username=c.username) }}" class="comment-author">{{ c.display_name }}</a>
+        <span class="comment-text">{{ c.content }}</span>
+        <span class="comment-time">{{ c.time_ago }} ago</span>
+      </div>
+    </div>
+    {% else %}
+    <div class="empty-state sm"><p>No feedback yet — be the first to respond!</p></div>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+function likeWriting(id, btn) {
+  fetch(`/writing/${id}/like`, { method: 'POST' })
+    .then(r => r.json())
+    .then(d => {
+      btn.querySelector('.action-icon').textContent = d.liked ? '❤️' : '🤍';
+      btn.querySelector('.like-count').textContent = d.count;
+      btn.classList.toggle('liked', d.liked);
+    });
+}
+</script>
+
+{% endblock %}
