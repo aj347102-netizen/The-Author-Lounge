@@ -1,0 +1,39 @@
+html{% extends 'base.html' %}
+{% block title %} — Messages{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h2>✉️ Messages</h2>
+</div>
+
+{% if convos %}
+<div class="convos-list">
+  {% for c in convos %}
+  <a href="{{ url_for('conversation', username=c.username) }}" class="convo-card {% if c.unread %}has-unread{% endif %}">
+    {% if c.avatar_url %}
+    <img src="{{ c.avatar_url }}" alt="{{ c.display_name }}" class="avatar">
+    {% else %}
+    <div class="avatar avatar-initial">{{ c.display_name[0].upper() }}</div>
+    {% endif %}
+    <div class="convo-info">
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span class="convo-name">{{ c.display_name }}</span>
+        {% if c.unread %}<span class="unread-dot"></span>{% endif %}
+      </div>
+      <span class="convo-preview">{{ c.last_message }}</span>
+    </div>
+    <span class="convo-time">{{ c.time_ago }}</span>
+  </a>
+  {% endfor %}
+</div>
+
+{% else %}
+<div class="empty-state" style="margin-top:40px;">
+  <div class="empty-icon">✉️</div>
+  <h3>No messages yet</h3>
+  <p>Visit an author's profile and hit ✉️ Message to start a conversation.</p>
+  <a href="{{ url_for('explore') }}" class="btn-primary">Find Authors</a>
+</div>
+{% endif %}
+
+{% endblock %}
