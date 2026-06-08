@@ -1,0 +1,76 @@
+html{% extends 'base.html' %}
+{% block title %} — Create Event{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <a href="{{ url_for('events') }}" class="back-btn">← Events</a>
+</div>
+
+<div class="create-post-card">
+  <h2 style="margin-bottom:18px;">📅 Create an Event</h2>
+  <form method="POST" action="{{ url_for('create_event') }}">
+
+    <div class="form-group">
+      <label>Event Title *</label>
+      <input type="text" name="title" placeholder="e.g. Virtual Book Club — June Edition" required>
+    </div>
+
+    <div class="form-group">
+      <label>Event Type *</label>
+      <div style="display:flex;gap:10px;">
+        <label class="type-choice">
+          <input type="radio" name="event_type" value="Virtual" checked onchange="toggleLocation(this)">
+          <span>💻 Virtual</span>
+        </label>
+        <label class="type-choice">
+          <input type="radio" name="event_type" value="In Person" onchange="toggleLocation(this)">
+          <span>📍 In Person</span>
+        </label>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      <div class="form-group" style="flex:1;min-width:130px;">
+        <label>Date *</label>
+        <input type="date" name="event_date" required>
+      </div>
+      <div class="form-group" style="flex:1;min-width:130px;">
+        <label>Time</label>
+        <input type="time" name="event_time">
+      </div>
+    </div>
+
+    <div class="form-group" id="location-field" style="display:none;">
+      <label>Location</label>
+      <input type="text" name="location" placeholder="e.g. Atlanta, GA or Barnes & Noble Downtown">
+    </div>
+
+    <div class="form-group" id="link-field">
+      <label>Event Link</label>
+      <input type="url" name="link" placeholder="https://zoom.us/... or Google Meet link">
+    </div>
+
+    <div class="form-group">
+      <label>Description</label>
+      <textarea name="description" rows="4" placeholder="Tell the community what this event is about…"></textarea>
+    </div>
+
+    <button type="submit" class="btn-primary" style="width:100%;">📅 Post Event</button>
+  </form>
+</div>
+
+<script>
+  function toggleLocation(radio) {
+    const loc = document.getElementById('location-field');
+    const lnk = document.getElementById('link-field');
+    if (radio.value === 'In Person') {
+      loc.style.display = 'block';
+      lnk.style.display = 'none';
+    } else {
+      loc.style.display = 'none';
+      lnk.style.display = 'block';
+    }
+  }
+</script>
+
+{% endblock %}
