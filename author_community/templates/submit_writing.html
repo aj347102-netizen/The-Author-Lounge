@@ -1,0 +1,58 @@
+html{% extends 'base.html' %}
+{% block title %} — Share Your Writing{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <a href="{{ url_for('writing') }}" class="back-btn">← Writing</a>
+</div>
+
+<div class="create-post-card">
+  <h2 style="margin-bottom:18px;">✍️ Share Your Writing</h2>
+  <form method="POST" action="{{ url_for('submit_writing') }}">
+
+    <div class="form-group">
+      <label>Title *</label>
+      <input type="text" name="title" placeholder="e.g. The Last Letter — Chapter 3" required>
+    </div>
+
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      <div class="form-group" style="flex:1;min-width:130px;">
+        <label>Type *</label>
+        <select name="piece_type" required>
+          <option value="story">📖 Story</option>
+          <option value="chapter">📑 Chapter</option>
+          <option value="poem">🌹 Poem</option>
+          <option value="excerpt">✂️ Excerpt</option>
+        </select>
+      </div>
+      <div class="form-group" style="flex:1;min-width:130px;">
+        <label>Genre</label>
+        <select name="genre">
+          <option value="">— Select —</option>
+          <option>Romance</option>
+          <option>Thriller</option>
+          <option>Fantasy</option>
+          <option>Sci-Fi</option>
+          <option>Mystery</option>
+          <option>Literary Fiction</option>
+          <option>Horror</option>
+          <option>Historical Fiction</option>
+          <option>Non-Fiction</option>
+          <option>Poetry</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Your Writing *</label>
+      <textarea name="content" rows="12"
+        placeholder="Paste or type your story, chapter, poem, or excerpt here…"
+        required></textarea>
+    </div>
+
+    <button type="submit" class="btn-primary" style="width:100%;">✍️ Share with Community</button>
+  </form>
+</div>
+
+{% endblock %}
