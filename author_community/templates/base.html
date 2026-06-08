@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+html<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -12,7 +12,12 @@
   {% if user %}
   <header class="top-bar">
     <a href="{{ url_for('feed') }}" class="logo">🖊️ The Author Lounge</a>
-    <a href="{{ url_for('create_post') }}" class="btn-post">+ Post</a>
+    <div class="top-bar-right">
+      <a href="{{ url_for('messages') }}" class="msg-icon">
+        ✉️{% if unread and unread > 0 %}<span class="msg-badge">{{ unread }}</span>{% endif %}
+      </a>
+      <a href="{{ url_for('create_post') }}" class="btn-post">+ Post</a>
+    </div>
   </header>
   {% endif %}
 
@@ -30,20 +35,43 @@
     <a href="{{ url_for('feed') }}" class="nav-item {% if request.endpoint == 'feed' %}active{% endif %}">
       <span class="nav-icon">🏠</span><span class="nav-label">Home</span>
     </a>
-    <a href="{{ url_for('explore') }}" class="nav-item {% if request.endpoint == 'explore' %}active{% endif %}">
-      <span class="nav-icon">🔍</span><span class="nav-label">Explore</span>
+    <a href="{{ url_for('books') }}" class="nav-item {% if request.endpoint in ['books','add_book'] %}active{% endif %}">
+      <span class="nav-icon">📚</span><span class="nav-label">Books</span>
     </a>
-    <a href="{{ url_for('create_post') }}" class="nav-item nav-create">
+    <a href="{{ url_for('writing') }}" class="nav-item nav-create {% if request.endpoint in ['writing','submit_writing','view_writing'] %}active{% endif %}">
       <span class="nav-icon">✍️</span><span class="nav-label">Write</span>
     </a>
-    <a href="{{ url_for('profile', username=user['username']) }}" class="nav-item {% if request.endpoint == 'profile' %}active{% endif %}">
-      <span class="nav-icon">👤</span><span class="nav-label">Profile</span>
+    <a href="{{ url_for('coffee_talk') }}" class="nav-item {% if request.endpoint in ['coffee_talk','create_topic','view_topic'] %}active{% endif %}">
+      <span class="nav-icon">☕</span><span class="nav-label">Talk</span>
     </a>
-    <a href="{{ url_for('logout') }}" class="nav-item">
-      <span class="nav-icon">🚪</span><span class="nav-label">Out</span>
+    <a href="#" class="nav-item" onclick="toggleMoreMenu(event)">
+      <span class="nav-icon">⋯</span><span class="nav-label">More</span>
     </a>
   </nav>
+
+  <!-- More Menu Popup -->
+  <div class="more-menu" id="moreMenu">
+    <a href="{{ url_for('explore') }}" class="more-item">🔍 Explore Authors</a>
+    <a href="{{ url_for('events') }}" class="more-item">📅 Events</a>
+    <a href="{{ url_for('confessions') }}" class="more-item">🤫 Confessions</a>
+    <a href="{{ url_for('profile', username=user['username']) }}" class="more-item">👤 My Profile</a>
+    <a href="{{ url_for('edit_profile') }}" class="more-item">✏️ Edit Profile</a>
+    <a href="{{ url_for('logout') }}" class="more-item more-logout">🚪 Log Out</a>
+  </div>
+  <div class="more-overlay" id="moreOverlay" onclick="closeMoreMenu()"></div>
   {% endif %}
 
   <script src="{{ url_for('static', filename='app.js') }}"></script>
-</bo
+  <script>
+    function toggleMoreMenu(e) {
+      e.preventDefault();
+      document.getElementById('moreMenu').classList.toggle('open');
+      document.getElementById('moreOverlay').classList.toggle('open');
+    }
+    function closeMoreMenu() {
+      document.getElementById('moreMenu').classList.remove('open');
+      document.getElementById('moreOverlay').classList.remove('open');
+    }
+  </script>
+</body>
+</html>
