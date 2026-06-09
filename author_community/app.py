@@ -1,7 +1,14 @@
+Thought process
+Thought process
+Here's the full app.py — GitHub → app.py → pencil ✏️ → Ctrl+A → delete → paste:
+
+python
 import os
 import hashlib
 import sqlite3
 import base64
+import random
+import json
 from datetime import datetime
 from functools import wraps
 from flask import (
@@ -12,6 +19,29 @@ from flask import (
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'ink-and-pages-secret-2024')
 DATABASE = os.environ.get('DATABASE_PATH', 'ink_and_pages.db')
+
+TRIVIA_QUESTIONS = [
+    {'q': 'Who wrote "To Kill a Mockingbird"?', 'options': ['Harper Lee', 'John Steinbeck', 'F. Scott Fitzgerald', 'Toni Morrison'], 'answer': 0},
+    {'q': 'What is the first book in the Harry Potter series?', 'options': ["The Sorcerer's Stone", 'The Chamber of Secrets', 'The Prisoner of Azkaban', 'The Goblet of Fire'], 'answer': 0},
+    {'q': 'Who wrote "Pride and Prejudice"?', 'options': ['Jane Austen', 'Charlotte Brontë', 'Emily Brontë', 'Mary Shelley'], 'answer': 0},
+    {'q': 'In which novel would you find the character Jay Gatsby?', 'options': ['The Great Gatsby', 'Of Mice and Men', 'The Sun Also Rises', 'East of Eden'], 'answer': 0},
+    {'q': 'Who wrote "1984"?', 'options': ['George Orwell', 'Aldous Huxley', 'Ray Bradbury', 'H.G. Wells'], 'answer': 0},
+    {'q': 'What book begins with "Call me Ishmael"?', 'options': ['Moby Dick', 'The Old Man and the Sea', 'Billy Budd', 'Lord Jim'], 'answer': 0},
+    {'q': 'Who wrote "The Alchemist"?', 'options': ['Paulo Coelho', 'Gabriel García Márquez', 'Isabel Allende', 'Jorge Amado'], 'answer': 0},
+    {'q': 'Which author created the detective Hercule Poirot?', 'options': ['Agatha Christie', 'Arthur Conan Doyle', 'Raymond Chandler', 'Dorothy L. Sayers'], 'answer': 0},
+    {'q': "What is the subtitle of Mary Shelley's Frankenstein?", 'options': ['The Modern Prometheus', 'A Gothic Tale', 'The Dark Creation', 'Born of Darkness'], 'answer': 0},
+    {'q': 'Who wrote "Beloved"?', 'options': ['Toni Morrison', 'Alice Walker', 'Maya Angelou', 'Zora Neale Hurston'], 'answer': 0},
+    {'q': "Which novel features the dystopian society of Gilead?", 'options': ["The Handmaid's Tale", '1984', 'Brave New World', 'We'], 'answer': 0},
+    {'q': 'Who wrote "Don Quixote"?', 'options': ['Miguel de Cervantes', 'Lope de Vega', 'Francisco de Quevedo', 'Tirso de Molina'], 'answer': 0},
+    {'q': 'Who wrote "The Color Purple"?', 'options': ['Alice Walker', 'Toni Morrison', 'Zora Neale Hurston', 'Maya Angelou'], 'answer': 0},
+    {'q': 'Who wrote "Lord of the Rings"?', 'options': ['J.R.R. Tolkien', 'C.S. Lewis', 'George R.R. Martin', 'Terry Pratchett'], 'answer': 0},
+    {'q': 'Which Shakespeare play features "To be or not to be"?', 'options': ['Hamlet', 'Macbeth', 'Othello', 'King Lear'], 'answer': 0},
+    {'q': 'Who wrote "One Hundred Years of Solitude"?', 'options': ['Gabriel García Márquez', 'Mario Vargas Llosa', 'Pablo Neruda', 'Jorge Luis Borges'], 'answer': 0},
+    {'q': 'Who wrote "The Catcher in the Rye"?', 'options': ['J.D. Salinger', 'Jack Kerouac', 'William Faulkner', 'John Updike'], 'answer': 0},
+    {'q': 'Which novel features a character named Atticus Finch?', 'options': ['To Kill a Mockingbird', 'Go Set a Watchman', 'The Help', 'A Time to Kill'], 'answer': 0},
+    {'q': 'Who wrote "Brave New World"?', 'options': ['Aldous Huxley', 'George Orwell', 'Ray Bradbury', 'H.G. Wells'], 'answer': 0},
+    {'q': 'Who wrote "Their Eyes Were Watching God"?', 'options': ['Zora Neale Hurston', 'Toni Morrison', 'Alice Walker', 'Maya Angelou'], 'answer': 0},
+]
 
 
 # ── DATABASE ────────────────────────────────────────────────────────────────
@@ -298,8 +328,21 @@ def feed():
     posts = [dict(p) for p in posts]
     for p in posts:
         p['time_ago'] = time_ago(p['created_at'])
+    panel_events = db.execute('''
+        SELECT e.*, u.display_name
+        FROM events e JOIN users u ON e.user_id=u.id
+        WHERE e.event_date >= date('now')
+        ORDER BY e.event_date ASC LIMIT 3
+    ''').fetchall()
+    panel_books = db.execute('''
+        SELECT b.*, u.username
+        FROM books b JOIN users u ON b.user_id=u.id
+        ORDER BY b.created_at DESC LIMIT 4
+    ''').fetchall()
     msgs = unread_count()
-    return render_template('feed.html', posts=posts, user=user, unread=msgs)
+    return render_template('feed.html', posts=posts, user=user, unread=msgs,
+                           panel_events=[dict(e) for e in panel_events],
+                           panel_books=[dict(b) for b in panel_books])
 
 # ── EXPLORE ─────────────────────────────────────────────────────────────────
 
@@ -587,7 +630,7 @@ def post_confession():
     content = request.form.get('content','').strip()
     category = request.form.get('category','writer')
     if not content or len(content) > 500:
-        flash('Confession must be 1–500 characters.', 'error')
+        flash('Confession must be 1-500 characters.', 'error')
         return redirect(url_for('confessions'))
     db = get_db()
     db.execute('INSERT INTO confessions (content,category) VALUES (?,?)', (content, category))
@@ -610,28 +653,26 @@ def events():
     db = get_db()
     user = current_user()
     uid = user['id'] if user else 0
-    upcoming = db.execute('''
+    all_events = db.execute('''
         SELECT e.*, u.username, u.display_name, u.avatar_url,
                COUNT(DISTINCT r.user_id) as rsvp_count
         FROM events e JOIN users u ON e.user_id=u.id
         LEFT JOIN event_rsvps r ON r.event_id=e.id
-        WHERE e.event_date >= date('now')
-        GROUP BY e.id ORDER BY e.event_date ASC LIMIT 30
-    ''').fetchall()
-    past = db.execute('''
-        SELECT e.*, u.username, u.display_name, u.avatar_url,
-               COUNT(DISTINCT r.user_id) as rsvp_count
-        FROM events e JOIN users u ON e.user_id=u.id
-        LEFT JOIN event_rsvps r ON r.event_id=e.id
-        WHERE e.event_date < date('now')
-        GROUP BY e.id ORDER BY e.event_date DESC LIMIT 10
+        GROUP BY e.id ORDER BY e.event_date ASC
     ''').fetchall()
     rsvp_ids = set()
     if user:
-        rsvp_ids = {r['event_id'] for r in db.execute('SELECT event_id FROM event_rsvps WHERE user_id=?', (uid,)).fetchall()}
+        rsvp_ids = {r['event_id'] for r in db.execute(
+            'SELECT event_id FROM event_rsvps WHERE user_id=?', (uid,)
+        ).fetchall()}
+    events_list = []
+    for e in all_events:
+        ev = dict(e)
+        ev['is_past'] = ev['event_date'] < datetime.utcnow().strftime('%Y-%m-%d')
+        ev['user_rsvp'] = ev['id'] in rsvp_ids
+        events_list.append(ev)
     msgs = unread_count()
-    return render_template('events.html', user=user, upcoming=[dict(e) for e in upcoming],
-                           past=[dict(e) for e in past], rsvp_ids=rsvp_ids, unread=msgs)
+    return render_template('events.html', user=user, events=events_list, unread=msgs)
 
 @app.route('/events/create', methods=['GET','POST'])
 @login_required
@@ -666,13 +707,13 @@ def rsvp_event(event_id):
     existing = db.execute('SELECT 1 FROM event_rsvps WHERE user_id=? AND event_id=?', (uid, event_id)).fetchone()
     if existing:
         db.execute('DELETE FROM event_rsvps WHERE user_id=? AND event_id=?', (uid, event_id))
-        going = False
+        rsvpd = False
     else:
         db.execute('INSERT INTO event_rsvps (user_id,event_id) VALUES (?,?)', (uid, event_id))
-        going = True
+        rsvpd = True
     db.commit()
     count = db.execute('SELECT COUNT(*) as c FROM event_rsvps WHERE event_id=?', (event_id,)).fetchone()['c']
-    return jsonify({'going': going, 'count': count})
+    return jsonify({'rsvpd': rsvpd, 'count': count})
 
 @app.route('/events/<int:event_id>/delete', methods=['POST'])
 @login_required
@@ -706,8 +747,15 @@ def messages():
         WHERE m.sender_id=? OR m.receiver_id=?
         GROUP BY u.id ORDER BY last_at DESC
     ''', (uid, uid, uid, uid, uid, uid)).fetchall()
+    convos_list = []
+    for c in convos:
+        cv = dict(c)
+        cv['unread'] = (cv['unread_msgs'] or 0) > 0
+        cv['last_message'] = cv['last_msg'] or ''
+        cv['time_ago'] = time_ago(cv['last_at'])
+        convos_list.append(cv)
     msgs = unread_count()
-    return render_template('messages.html', user=user, convos=[dict(c) for c in convos], unread=msgs)
+    return render_template('messages.html', user=user, convos=convos_list, unread=msgs)
 
 @app.route('/messages/<username>', methods=['GET','POST'])
 @login_required
@@ -715,30 +763,30 @@ def conversation(username):
     db = get_db()
     user = current_user()
     uid = user['id']
-    partner = db.execute('SELECT * FROM users WHERE username=?', (username,)).fetchone()
-    if not partner:
+    other_user = db.execute('SELECT * FROM users WHERE username=?', (username,)).fetchone()
+    if not other_user:
         flash('User not found.', 'error')
         return redirect(url_for('messages'))
     if request.method == 'POST':
         content = request.form.get('content','').strip()
         if content:
             db.execute('INSERT INTO messages (sender_id,receiver_id,content) VALUES (?,?,?)',
-                       (uid, partner['id'], content))
+                       (uid, other_user['id'], content))
             db.commit()
         return redirect(url_for('conversation', username=username))
-    db.execute('UPDATE messages SET is_read=1 WHERE sender_id=? AND receiver_id=?', (partner['id'], uid))
+    db.execute('UPDATE messages SET is_read=1 WHERE sender_id=? AND receiver_id=?', (other_user['id'], uid))
     db.commit()
     thread = db.execute('''
         SELECT m.*, u.username, u.display_name, u.avatar_url
         FROM messages m JOIN users u ON m.sender_id=u.id
         WHERE (m.sender_id=? AND m.receiver_id=?) OR (m.sender_id=? AND m.receiver_id=?)
         ORDER BY m.created_at ASC LIMIT 100
-    ''', (uid, partner['id'], partner['id'], uid)).fetchall()
+    ''', (uid, other_user['id'], other_user['id'], uid)).fetchall()
     thread = [dict(m) for m in thread]
     for m in thread:
         m['time_ago'] = time_ago(m['created_at'])
     msgs = unread_count()
-    return render_template('conversation.html', user=user, partner=dict(partner), thread=thread, unread=msgs)
+    return render_template('conversation.html', user=dict(user), other_user=dict(other_user), messages=thread, unread=msgs)
 
 # ── COMMUNITY WRITING ────────────────────────────────────────────────────────
 
@@ -746,31 +794,28 @@ def conversation(username):
 def writing():
     db = get_db()
     user = current_user()
-    uid = user['id'] if user else 0
     piece_type = request.args.get('type','all')
     if piece_type == 'all':
         pieces = db.execute('''
             SELECT wp.*, u.username, u.display_name, u.avatar_url,
                    COUNT(DISTINCT wl.user_id) as like_count,
-                   COUNT(DISTINCT wc.id) as comment_count,
-                   EXISTS(SELECT 1 FROM writing_likes WHERE user_id=? AND piece_id=wp.id) as user_liked
+                   COUNT(DISTINCT wc.id) as comment_count
             FROM writing_pieces wp JOIN users u ON wp.user_id=u.id
             LEFT JOIN writing_likes wl ON wl.piece_id=wp.id
             LEFT JOIN writing_comments wc ON wc.piece_id=wp.id
             GROUP BY wp.id ORDER BY wp.created_at DESC LIMIT 40
-        ''', (uid,)).fetchall()
+        ''').fetchall()
     else:
         pieces = db.execute('''
             SELECT wp.*, u.username, u.display_name, u.avatar_url,
                    COUNT(DISTINCT wl.user_id) as like_count,
-                   COUNT(DISTINCT wc.id) as comment_count,
-                   EXISTS(SELECT 1 FROM writing_likes WHERE user_id=? AND piece_id=wp.id) as user_liked
+                   COUNT(DISTINCT wc.id) as comment_count
             FROM writing_pieces wp JOIN users u ON wp.user_id=u.id
             LEFT JOIN writing_likes wl ON wl.piece_id=wp.id
             LEFT JOIN writing_comments wc ON wc.piece_id=wp.id
             WHERE wp.piece_type=?
             GROUP BY wp.id ORDER BY wp.created_at DESC LIMIT 40
-        ''', (uid, piece_type)).fetchall()
+        ''', (piece_type,)).fetchall()
     pieces = [dict(p) for p in pieces]
     for p in pieces:
         p['time_ago'] = time_ago(p['created_at'])
@@ -958,6 +1003,22 @@ def delete_topic(topic_id):
         db.execute('DELETE FROM topics WHERE id=?', (topic_id,))
         db.commit()
     return redirect(url_for('coffee_talk'))
+
+# ── TRIVIA ──────────────────────────────────────────────────────────────────
+
+@app.route('/trivia')
+def trivia():
+    user = current_user()
+    questions = random.sample(TRIVIA_QUESTIONS, 5)
+    for q in questions:
+        opts = list(enumerate(q['options']))
+        random.shuffle(opts)
+        correct_text = q['options'][q['answer']]
+        q['options'] = [o[1] for o in opts]
+        q['answer'] = q['options'].index(correct_text)
+    msgs = unread_count()
+    return render_template('trivia.html', user=user,
+                           questions=json.dumps(questions), unread=msgs)
 
 if __name__ == '__main__':
     init_db()
