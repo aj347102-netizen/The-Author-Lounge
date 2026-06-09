@@ -2,14 +2,14 @@
 {% block title %} — Home{% endblock %}
 {% block content %}
 
-<!-- ── DESKTOP HOME ── -->
 <div class="feed-home-grid">
 
   <!-- Left: Hero + Feature Cards + Posts -->
   <div class="feed-main">
 
     <!-- Hero Banner -->
-    <div class="feed-hero">
+    <div class="feed-hero" style="background: url('https://github.com/user-attachments/assets/c06d1745-abc0-4cf3-b17d-59cc7f4f3ef6') center center / cover no-repeat; min-height:380px;">
+      <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 100%);border-radius:16px;"></div>
       <h1 class="feed-hero-title">Welcome to The Author Lounge</h1>
       <p class="feed-hero-sub">Read. Write. Connect. Inspire.</p>
       <div class="feed-hero-divider">— ✒️ —</div>
@@ -65,11 +65,11 @@
     </div>
 
     <!-- Mobile welcome banner -->
+    {% if user %}
     <div class="welcome-banner" style="margin-top:16px;">
-      {% if user %}
       Welcome back, <strong>{{ user.display_name }}</strong>! ☕
-      {% endif %}
     </div>
+    {% endif %}
 
     <!-- Posts Feed -->
     <div class="feed" style="margin-top:16px;">
@@ -157,7 +157,6 @@
   <!-- Right Panel (desktop only) -->
   <div class="feed-right-panel">
 
-    <!-- Upcoming Events -->
     <div class="panel-widget">
       <div class="panel-widget-header">
         <span class="panel-widget-title">📅 Upcoming Events</span>
@@ -179,7 +178,6 @@
       {% endif %}
     </div>
 
-    <!-- New Book Releases -->
     <div class="panel-widget">
       <div class="panel-widget-header">
         <span class="panel-widget-title">📚 New Book Releases</span>
@@ -202,7 +200,6 @@
       {% endif %}
     </div>
 
-    <!-- Quick Links -->
     <div class="panel-widget">
       <div class="panel-widget-header">
         <span class="panel-widget-title">🔗 Quick Links</span>
