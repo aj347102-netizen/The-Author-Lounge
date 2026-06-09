@@ -1,17 +1,25 @@
 css/* ── RESET & BASE ───────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg: #120800;
-  --card: #1e0a02;
-  --brown-dark: #0d0500;
-  --brown-mid: #2d1005;
   --gold: #C9A84C;
   --gold-light: #F0D080;
-  --text: #E8E0D0;
+  --dark: #2d1005;
+  --dark2: #3d1a08;
+  --dark3: #120800;
+  --ink: #E8E0D0;
   --muted: #7A5838;
-  --border: rgba(201,168,76,0.15);
-  --success: #4CAF50;
-  --error: #e53935;
+  --light: #120800;
+  --card: #1e0a02;
+  --card2: #261005;
+  --border: #3d1a08;
+  --white: #F5EFE6;
+  --thought-bg: #1e0a02;
+  --snap-bg: #18202A;
+  --reel-bg: #1E1828;
+  --event-bg: #182018;
+  --radius: 16px;
+  --shadow: 0 2px 16px rgba(0,0,0,.55);
+}
 }
 
 
