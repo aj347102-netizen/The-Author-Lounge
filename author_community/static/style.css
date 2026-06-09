@@ -1,26 +1,19 @@
 css/* ── RESET & BASE ───────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 :root {
+  --bg: #120800;
+  --card: #1e0a02;
+  --brown-dark: #0d0500;
+  --brown-mid: #2d1005;
   --gold: #C9A84C;
   --gold-light: #F0D080;
-  --dark: #2A1608;
-  --dark2: #3A2010;
-  --dark3: #140A04;
-  --ink: #E8E0D0;
-  --muted: #7A6848;
-  --light: #140A04;
-  --card: #201208;
-  --card2: #2C1A0A;
-  --border: #3A2210;
-  --white: #F5EFE6;
-  --thought-bg: #231408;
-  --snap-bg: #18202A;
-  --reel-bg: #1E1828;
-  --event-bg: #182018;
-  --radius: 16px;
-  --shadow: 0 2px 16px rgba(0,0,0,.55);
+  --text: #E8E0D0;
+  --muted: #7A5838;
+  --border: rgba(201,168,76,0.15);
+  --success: #4CAF50;
+  --error: #e53935;
 }
+
 
 html { font-size: 16px; scroll-behavior: smooth; }
 
@@ -700,7 +693,7 @@ css/* ── DESKTOP SIDEBAR LAYOUT ──────────────�
   .sidebar {
     width: 210px;
     min-height: 100vh;
-    background: #1a0c04;
+    background: #0d0500
     border-right: 1px solid rgba(201,168,76,0.2);
     display: flex;
     flex-direction: column;
