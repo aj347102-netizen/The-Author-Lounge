@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% block title %} — Book Trivia{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h2>🎯 Book Trivia</h2>
+</div>
+<p class="section-desc">5 questions. How well do you know your books?</p>
+
+<div class="create-post-card" style="max-width:600px;margin:0 auto;">
+  <div id="quiz-container">
+
+    <!-- Score screen (hidden initially) -->
+    <div id="score-screen" style="display:none;text-align:center;padding:20px 0;">
+      <div style="font-size:3rem;margin-bottom:12px;">🏆</div>
+      <h2 style="color:var(--gold);margin-bottom:8px;">Quiz Complete!</h2>
+      <p style="font-size:1.4rem;margin-bottom:6px;">You scored <span id="final-score" style="color:var(--gold);font-weight:700;"></span> out of 5</p>
+      <p id="score-msg" style="color:var(--muted);margin-bottom:24px;"></p>
+      <a href="{{ url_for('trivia') }}" class="btn-primary">Play Again</a>
+      <a href="{{ url_for('feed') }}" class="btn-outline" style="margin-left:10px;">Home</a>
+    </div>
+
+    <!-- Question screen -->
+    <div id="question-screen">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <span id="q-counter" style="color:var(--muted);font-size:0.85rem;">Question 1 of 5</span>
+        <span id="q-score-live" style="color:var(--gold);font-size:0.85rem;font-weight:700;">Score: 0</span>
+      </div>
+
+      <!-- Progress bar -->
+      <div style="background:var(--border);border-radius:4px;height:6px;margin-bottom:24px;">
+        <div id="progress-bar" style="background:var(--gold);height:6px;border-radius:4px;width:0%;transition:width 0.4s;"></div>
+      </div>
+
+      <h3 id="question-text" style="font-size:1.1rem;color:var(--ink);margin-bottom:20px;line-height:1.5;"></h3>
+
+      <div id="options-container" style="display:flex;flex-direction:column;gap:10px;"></div>
+
+      <div id="feedback" style="display:none;margin-top:16px;padding:12px 16px;border-radius:10px;font-weight:600;"></div>
+
+      <button id="next-btn" onclick="nextQuestion()" style="display:none;margin-top:16px;width:100%;" class="btn-primary">
+        Next Question →
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+const questions = {{ questions|safe }};
+let current = 0;
+let score = 0;
+let answered = false;
+
+function loadQuestion() {
+  answered = false;
+  const q = questions[current];
+  document.getElementById('q-counter').textContent = 'Question ' + (current+1) + ' of 5';
+  document.getElementById('q-score-live').textContent = 'Score: ' + score;
+  document.getElementById('progress-bar').style.width = (current / 5 * 100) + '%';
+  document.getElementById('question-text').textContent = q.q;
+  document.getElementById('feedback').style.display = 'none';
+  document.getElementById('next-btn').style.display = 'none';
+
+  const container = document.getElementById('options-container');
+  container.innerHTML = '';
+  q.options.forEach(function(opt, i) {
+    const btn = document.createElement('button');
+    btn.textContent = opt;
+    btn.className = 'btn-outline';
+    btn.style.cssText = 'width:100%;text-align:left;padding:12px 16px;font-size:0.9rem;';
+    btn.onclick = function() { selectAnswer(i, btn); };
+    container.appendChild(btn);
+  });
+}
+
+function selectAnswer(index, btn) {
+  if (answered) return;
+  answered = true;
+  const q = questions[current];
+  const allBtns = document.getElementById('options-container').querySelectorAll('button');
+  const feedback = document.getElementById('feedback');
+
+  allBtns.forEach(function(b) { b.disabled = true; });
+
+  if (index === q.answer) {
+    score++;
+    btn.style.background = '#065f46';
+    btn.style.borderColor = '#6ee7b7';
+    btn.style.color = '#6ee7b7';
+    feedback.textContent = 'Correct! Well done!';
+    feedback.style.background = '#0d2e1e';
+    feedback.style.color = '#6ee7b7';
+    feedback.style.border = '1px solid #065f46';
+  } else {
+    btn.style.background = '#2e0d0d';
+    btn.style.borderColor = '#fca5a5';
+    btn.style.color = '#fca5a5';
+    allBtns[q.answer].style.background = '#065f46';
+    allBtns[q.answer].style.borderColor = '#6ee7b7';
+    allBtns[q.answer].style.color = '#6ee7b7';
+    feedback.textContent = 'Not quite! The correct answer was: ' + q.options[q.answer];
+    feedback.style.background = '#2e0d0d';
+    feedback.style.color = '#fca5a5';
+    feedback.style.border = '1px solid #991b1b';
+  }
+
+  feedback.style.display = 'block';
+  document.getElementById('next-btn').style.display = 'block';
+  document.getElementById('next-btn').textContent = current < 4 ? 'Next Question →' : 'See My Score!';
+}
+
+function nextQuestion() {
+  current++;
+  if (current >= 5) {
+    showScore();
+  } else {
+    loadQuestion();
+  }
+}
+
+function showScore() {
+  document.getElementById('progress-bar').style.width = '100%';
+  document.getElementById('question-screen').style.display = 'none';
+  document.getElementById('score-screen').style.display = 'block';
+  document.getElementById('final-score').textContent = score;
+  const msgs = ['Keep reading! 📚', 'Not bad! 📖', 'Good job! ✍️', 'Great work! 🌟', 'Almost perfect! 🔥', 'Perfect score! 🏆'];
+  document.getElementById('score-msg').textContent = msgs[score];
+}
+
+loadQuestion();
+</script>
+
+{% endblock %}
