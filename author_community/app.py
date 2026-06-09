@@ -1,7 +1,3 @@
-Thought process
-Thought process
-Here's the full app.py — GitHub → app.py → pencil ✏️ → Ctrl+A → delete → paste:
-
 python
 import os
 import hashlib
