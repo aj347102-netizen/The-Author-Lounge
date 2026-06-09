@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block title %} — Book Showcase{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h2>📚 Book Showcase</h2>
+  {% if user %}
+  <a href="{{ url_for('add_book') }}" class="btn-primary btn-sm">+ Add Book</a>
+  {% endif %}
+</div>
+
+{% if featured %}
+<section class="book-section">
+  <h3 class="section-title">⭐ Featured Books</h3>
+  <div class="books-grid featured-grid">
+    {% for book in featured %}
+    <div class="book-card featured-card">
+      {% if book.cover_url %}
+      <img src="{{ book.cover_url }}" alt="{{ book.title }}" class="book-cover">
+      {% else %}
+      <div class="book-cover book-cover-placeholder">📖</div>
+      {% endif %}
+      <div class="book-info">
+        <div class="book-title">{{ book.title }}</div>
+        <div class="book-author">by {{ book.author_name }}</div>
+        {% if book.genre %}<span class="genre-badge sm">{{ book.genre }}</span>{% endif %}
+        {% if book.description %}<p class="book-desc">{{ book.description[:120] }}{% if book.description|length > 120 %}…{% endif %}</p>{% endif %}
+        <div class="book-actions">
+          {% if book.buy_link %}
+          <a href="{{ book.buy_link }}" target="_blank" class="btn-primary btn-sm">Buy Now</a>
+          {% endif %}
+          <a href="{{ url_for('profile', username=book.username) }}" class="btn-outline btn-sm">{{ book.display_name }}</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if new_releases %}
+<section class="book-section">
+  <h3 class="section-title">🆕 New Releases</h3>
+  <div class="books-grid">
+    {% for book in new_releases %}
+    <div class="book-card">
+      {% if book.cover_url %}
+      <img src="{{ book.cover_url }}" alt="{{ book.title }}" class="book-cover book-cover-sm">
+      {% else %}
+      <div class="book-cover book-cover-sm book-cover-placeholder">📖</div>
+      {% endif %}
+      <div class="book-info">
+        <div class="book-title">{{ book.title }}</div>
+        <div class="book-author">by {{ book.author_name }}</div>
+        {% if book.genre %}<span class="genre-badge sm">{{ book.genre }}</span>{% endif %}
+        <div class="book-actions">
+          {% if book.buy_link %}
+          <a href="{{ book.buy_link }}" target="_blank" class="btn-primary btn-sm">Buy</a>
+          {% endif %}
+          <a href="{{ url_for('profile', username=book.username) }}" class="btn-outline btn-sm">Author</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if upcoming %}
+<section class="book-section">
+  <h3 class="section-title">⏳ Coming Soon</h3>
+  <div class="books-grid">
+    {% for book in upcoming %}
+    <div class="book-card upcoming-card">
+      {% if book.cover_url %}
+      <img src="{{ book.cover_url }}" alt="{{ book.title }}" class="book-cover book-cover-sm">
+      {% else %}
+      <div class="book-cover book-cover-sm book-cover-placeholder">📖</div>
+      {% endif %}
+      <div class="book-info">
+        <div class="book-title">{{ book.title }}</div>
+        <div class="book-author">by {{ book.author_name }}</div>
+        {% if book.release_date %}<div class="book-release">📅 {{ book.release_date }}</div>{% endif %}
+        {% if book.genre %}<span class="genre-badge sm">{{ book.genre }}</span>{% endif %}
+        <a href="{{ url_for('profile', username=book.username) }}" class="btn-outline btn-sm" style="margin-top:8px;display:inline-block;">Author</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if not featured and not new_releases and not upcoming %}
+<div class="empty-state">
+  <div class="empty-icon">📚</div>
+  <h3>No books yet</h3>
+  <p>Be the first to showcase your book!</p>
+  {% if user %}
+  <a href="{{ url_for('add_book') }}" class="btn-primary">Add Your Book</a>
+  {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}
