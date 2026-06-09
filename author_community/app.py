@@ -1,5 +1,6 @@
-python
-import os
+Here's the full app.py — GitHub → app.py → pencil ✏️ → Ctrl+A → delete → paste everything below the line:
+
+pythonimport os
 import hashlib
 import sqlite3
 import base64
@@ -17,30 +18,28 @@ app.secret_key = os.environ.get('SECRET_KEY', 'ink-and-pages-secret-2024')
 DATABASE = os.environ.get('DATABASE_PATH', 'ink_and_pages.db')
 
 TRIVIA_QUESTIONS = [
-    {'q': 'Who wrote "To Kill a Mockingbird"?', 'options': ['Harper Lee', 'John Steinbeck', 'F. Scott Fitzgerald', 'Toni Morrison'], 'answer': 0},
-    {'q': 'What is the first book in the Harry Potter series?', 'options': ["The Sorcerer's Stone", 'The Chamber of Secrets', 'The Prisoner of Azkaban', 'The Goblet of Fire'], 'answer': 0},
-    {'q': 'Who wrote "Pride and Prejudice"?', 'options': ['Jane Austen', 'Charlotte Brontë', 'Emily Brontë', 'Mary Shelley'], 'answer': 0},
+    {'q': 'Who wrote To Kill a Mockingbird?', 'options': ['Harper Lee', 'John Steinbeck', 'F. Scott Fitzgerald', 'Toni Morrison'], 'answer': 0},
+    {'q': 'What is the first book in the Harry Potter series?', 'options': ['The Sorcerers Stone', 'The Chamber of Secrets', 'The Prisoner of Azkaban', 'The Goblet of Fire'], 'answer': 0},
+    {'q': 'Who wrote Pride and Prejudice?', 'options': ['Jane Austen', 'Charlotte Bronte', 'Emily Bronte', 'Mary Shelley'], 'answer': 0},
     {'q': 'In which novel would you find the character Jay Gatsby?', 'options': ['The Great Gatsby', 'Of Mice and Men', 'The Sun Also Rises', 'East of Eden'], 'answer': 0},
-    {'q': 'Who wrote "1984"?', 'options': ['George Orwell', 'Aldous Huxley', 'Ray Bradbury', 'H.G. Wells'], 'answer': 0},
-    {'q': 'What book begins with "Call me Ishmael"?', 'options': ['Moby Dick', 'The Old Man and the Sea', 'Billy Budd', 'Lord Jim'], 'answer': 0},
-    {'q': 'Who wrote "The Alchemist"?', 'options': ['Paulo Coelho', 'Gabriel García Márquez', 'Isabel Allende', 'Jorge Amado'], 'answer': 0},
+    {'q': 'Who wrote 1984?', 'options': ['George Orwell', 'Aldous Huxley', 'Ray Bradbury', 'H.G. Wells'], 'answer': 0},
+    {'q': 'What book begins with Call me Ishmael?', 'options': ['Moby Dick', 'The Old Man and the Sea', 'Billy Budd', 'Lord Jim'], 'answer': 0},
+    {'q': 'Who wrote The Alchemist?', 'options': ['Paulo Coelho', 'Gabriel Garcia Marquez', 'Isabel Allende', 'Jorge Amado'], 'answer': 0},
     {'q': 'Which author created the detective Hercule Poirot?', 'options': ['Agatha Christie', 'Arthur Conan Doyle', 'Raymond Chandler', 'Dorothy L. Sayers'], 'answer': 0},
-    {'q': "What is the subtitle of Mary Shelley's Frankenstein?", 'options': ['The Modern Prometheus', 'A Gothic Tale', 'The Dark Creation', 'Born of Darkness'], 'answer': 0},
-    {'q': 'Who wrote "Beloved"?', 'options': ['Toni Morrison', 'Alice Walker', 'Maya Angelou', 'Zora Neale Hurston'], 'answer': 0},
-    {'q': "Which novel features the dystopian society of Gilead?", 'options': ["The Handmaid's Tale", '1984', 'Brave New World', 'We'], 'answer': 0},
-    {'q': 'Who wrote "Don Quixote"?', 'options': ['Miguel de Cervantes', 'Lope de Vega', 'Francisco de Quevedo', 'Tirso de Molina'], 'answer': 0},
-    {'q': 'Who wrote "The Color Purple"?', 'options': ['Alice Walker', 'Toni Morrison', 'Zora Neale Hurston', 'Maya Angelou'], 'answer': 0},
-    {'q': 'Who wrote "Lord of the Rings"?', 'options': ['J.R.R. Tolkien', 'C.S. Lewis', 'George R.R. Martin', 'Terry Pratchett'], 'answer': 0},
-    {'q': 'Which Shakespeare play features "To be or not to be"?', 'options': ['Hamlet', 'Macbeth', 'Othello', 'King Lear'], 'answer': 0},
-    {'q': 'Who wrote "One Hundred Years of Solitude"?', 'options': ['Gabriel García Márquez', 'Mario Vargas Llosa', 'Pablo Neruda', 'Jorge Luis Borges'], 'answer': 0},
-    {'q': 'Who wrote "The Catcher in the Rye"?', 'options': ['J.D. Salinger', 'Jack Kerouac', 'William Faulkner', 'John Updike'], 'answer': 0},
+    {'q': 'Who wrote Beloved?', 'options': ['Toni Morrison', 'Alice Walker', 'Maya Angelou', 'Zora Neale Hurston'], 'answer': 0},
+    {'q': 'Which novel features the dystopian society of Gilead?', 'options': ['The Handmaids Tale', '1984', 'Brave New World', 'We'], 'answer': 0},
+    {'q': 'Who wrote Don Quixote?', 'options': ['Miguel de Cervantes', 'Lope de Vega', 'Francisco de Quevedo', 'Tirso de Molina'], 'answer': 0},
+    {'q': 'Who wrote The Color Purple?', 'options': ['Alice Walker', 'Toni Morrison', 'Zora Neale Hurston', 'Maya Angelou'], 'answer': 0},
+    {'q': 'Who wrote Lord of the Rings?', 'options': ['J.R.R. Tolkien', 'C.S. Lewis', 'George R.R. Martin', 'Terry Pratchett'], 'answer': 0},
+    {'q': 'Which Shakespeare play features To be or not to be?', 'options': ['Hamlet', 'Macbeth', 'Othello', 'King Lear'], 'answer': 0},
+    {'q': 'Who wrote One Hundred Years of Solitude?', 'options': ['Gabriel Garcia Marquez', 'Mario Vargas Llosa', 'Pablo Neruda', 'Jorge Luis Borges'], 'answer': 0},
+    {'q': 'Who wrote The Catcher in the Rye?', 'options': ['J.D. Salinger', 'Jack Kerouac', 'William Faulkner', 'John Updike'], 'answer': 0},
     {'q': 'Which novel features a character named Atticus Finch?', 'options': ['To Kill a Mockingbird', 'Go Set a Watchman', 'The Help', 'A Time to Kill'], 'answer': 0},
-    {'q': 'Who wrote "Brave New World"?', 'options': ['Aldous Huxley', 'George Orwell', 'Ray Bradbury', 'H.G. Wells'], 'answer': 0},
-    {'q': 'Who wrote "Their Eyes Were Watching God"?', 'options': ['Zora Neale Hurston', 'Toni Morrison', 'Alice Walker', 'Maya Angelou'], 'answer': 0},
+    {'q': 'Who wrote Brave New World?', 'options': ['Aldous Huxley', 'George Orwell', 'Ray Bradbury', 'H.G. Wells'], 'answer': 0},
+    {'q': 'Who wrote Their Eyes Were Watching God?', 'options': ['Zora Neale Hurston', 'Toni Morrison', 'Alice Walker', 'Maya Angelou'], 'answer': 0},
+    {'q': 'Who wrote The Great Gatsby?', 'options': ['F. Scott Fitzgerald', 'Ernest Hemingway', 'John Steinbeck', 'William Faulkner'], 'answer': 0},
 ]
 
-
-# ── DATABASE ────────────────────────────────────────────────────────────────
 
 def get_db():
     if 'db' not in g:
@@ -241,7 +240,6 @@ def unread_count():
     ).fetchone()
     return c['c'] if c else 0
 
-# ── AUTH ────────────────────────────────────────────────────────────────────
 
 @app.route('/register', methods=['GET','POST'])
 def register():
@@ -267,7 +265,7 @@ def register():
         user = db.execute('SELECT * FROM users WHERE username=?', (username,)).fetchone()
         session['user_id'] = user['id']
         session['username'] = user['username']
-        flash(f"Welcome, {display_name}! 🖊️", 'success')
+        flash('Welcome, ' + display_name + '!', 'success')
         return redirect(url_for('feed'))
     return render_template('register.html')
 
@@ -292,7 +290,6 @@ def logout():
     session.clear()
     return redirect(url_for('login'))
 
-# ── FEED ────────────────────────────────────────────────────────────────────
 
 @app.route('/')
 def feed():
@@ -340,7 +337,6 @@ def feed():
                            panel_events=[dict(e) for e in panel_events],
                            panel_books=[dict(b) for b in panel_books])
 
-# ── EXPLORE ─────────────────────────────────────────────────────────────────
 
 @app.route('/explore')
 def explore():
@@ -366,7 +362,6 @@ def explore():
     msgs = unread_count()
     return render_template('explore.html', authors=authors, user=user, unread=msgs)
 
-# ── POSTS ───────────────────────────────────────────────────────────────────
 
 @app.route('/post/create', methods=['GET','POST'])
 @login_required
@@ -384,7 +379,7 @@ def create_post():
         db.execute('INSERT INTO posts (user_id,post_type,content,media_url,event_date,event_location) VALUES (?,?,?,?,?,?)',
                    (session['user_id'], post_type, content, media_url, event_date, event_location))
         db.commit()
-        flash('Posted! ✨', 'success')
+        flash('Posted!', 'success')
         return redirect(url_for('feed'))
     user = current_user()
     post_type = request.args.get('type','thought')
@@ -457,7 +452,6 @@ def delete_post(post_id):
         db.commit()
     return redirect(url_for('feed'))
 
-# ── PROFILE ─────────────────────────────────────────────────────────────────
 
 @app.route('/profile/<username>')
 def profile(username):
@@ -505,7 +499,7 @@ def edit_profile():
                 if len(file_data) <= 5 * 1024 * 1024:
                     mimetype = file.content_type or 'image/jpeg'
                     b64 = base64.b64encode(file_data).decode('utf-8')
-                    avatar_url = f"data:{mimetype};base64,{b64}"
+                    avatar_url = 'data:' + mimetype + ';base64,' + b64
                 else:
                     flash('Photo too large. Please use a photo under 5MB.', 'error')
         db.execute('UPDATE users SET display_name=?,bio=?,genre=?,avatar_url=?,website=? WHERE id=?',
@@ -516,12 +510,11 @@ def edit_profile():
                     request.form.get('website','').strip(),
                     user['id']))
         db.commit()
-        flash('Profile updated! ✨', 'success')
+        flash('Profile updated!', 'success')
         return redirect(url_for('profile', username=user['username']))
     msgs = unread_count()
     return render_template('edit_profile.html', user=user, unread=msgs)
 
-# ── FOLLOW ──────────────────────────────────────────────────────────────────
 
 @app.route('/follow/<username>', methods=['POST'])
 @login_required
@@ -542,7 +535,6 @@ def follow(username):
     count = db.execute('SELECT COUNT(*) as c FROM follows WHERE following_id=?', (target['id'],)).fetchone()['c']
     return jsonify({'following': following, 'follower_count': count})
 
-# ── BOOKS ───────────────────────────────────────────────────────────────────
 
 @app.route('/books')
 def books():
@@ -584,11 +576,10 @@ def add_book():
             flash('Book title and author name are required.', 'error')
             return redirect(url_for('add_book'))
         db = get_db()
-        db.execute('''INSERT INTO books (user_id,title,author_name,genre,description,cover_url,buy_link,release_date,book_type)
-                      VALUES (?,?,?,?,?,?,?,?,?)''',
+        db.execute('INSERT INTO books (user_id,title,author_name,genre,description,cover_url,buy_link,release_date,book_type) VALUES (?,?,?,?,?,?,?,?,?)',
                    (session['user_id'], title, author_name, genre, description, cover_url, buy_link, release_date, book_type))
         db.commit()
-        flash('Book added! 📚', 'success')
+        flash('Book added!', 'success')
         return redirect(url_for('profile', username=session['username']))
     user = current_user()
     msgs = unread_count()
@@ -604,7 +595,6 @@ def delete_book(book_id):
         db.commit()
     return redirect(url_for('profile', username=session['username']))
 
-# ── CONFESSIONS ─────────────────────────────────────────────────────────────
 
 @app.route('/confessions')
 def confessions():
@@ -631,7 +621,7 @@ def post_confession():
     db = get_db()
     db.execute('INSERT INTO confessions (content,category) VALUES (?,?)', (content, category))
     db.commit()
-    flash('Your confession has been shared anonymously. 🤫', 'success')
+    flash('Your confession has been shared anonymously.', 'success')
     return redirect(url_for('confessions'))
 
 @app.route('/confessions/<int:conf_id>/like', methods=['POST'])
@@ -642,7 +632,6 @@ def like_confession(conf_id):
     c = db.execute('SELECT like_count FROM confessions WHERE id=?', (conf_id,)).fetchone()
     return jsonify({'count': c['like_count'] if c else 0})
 
-# ── EVENTS ──────────────────────────────────────────────────────────────────
 
 @app.route('/events')
 def events():
@@ -685,11 +674,10 @@ def create_event():
             flash('Title and date are required.', 'error')
             return redirect(url_for('create_event'))
         db = get_db()
-        db.execute('''INSERT INTO events (user_id,title,description,event_date,event_time,location,event_type,link)
-                      VALUES (?,?,?,?,?,?,?,?)''',
+        db.execute('INSERT INTO events (user_id,title,description,event_date,event_time,location,event_type,link) VALUES (?,?,?,?,?,?,?,?)',
                    (session['user_id'], title, description, event_date, event_time, location, event_type, link))
         db.commit()
-        flash('Event created! 📅', 'success')
+        flash('Event created!', 'success')
         return redirect(url_for('events'))
     user = current_user()
     msgs = unread_count()
@@ -721,7 +709,6 @@ def delete_event(event_id):
         db.commit()
     return redirect(url_for('events'))
 
-# ── DIRECT MESSAGES ─────────────────────────────────────────────────────────
 
 @app.route('/messages')
 @login_required
@@ -784,7 +771,6 @@ def conversation(username):
     msgs = unread_count()
     return render_template('conversation.html', user=dict(user), other_user=dict(other_user), messages=thread, unread=msgs)
 
-# ── COMMUNITY WRITING ────────────────────────────────────────────────────────
 
 @app.route('/writing')
 def writing():
@@ -831,11 +817,10 @@ def submit_writing():
             flash('Title and content are required.', 'error')
             return redirect(url_for('submit_writing'))
         db = get_db()
-        db.execute('''INSERT INTO writing_pieces (user_id,title,genre,piece_type,excerpt,content)
-                      VALUES (?,?,?,?,?,?)''',
+        db.execute('INSERT INTO writing_pieces (user_id,title,genre,piece_type,excerpt,content) VALUES (?,?,?,?,?,?)',
                    (session['user_id'], title, genre, piece_type, excerpt, content))
         db.commit()
-        flash('Your piece has been shared! ✍️', 'success')
+        flash('Your piece has been shared!', 'success')
         return redirect(url_for('writing'))
     user = current_user()
     msgs = unread_count()
@@ -907,7 +892,6 @@ def delete_writing(piece_id):
         db.commit()
     return redirect(url_for('writing'))
 
-# ── COFFEE TALK ─────────────────────────────────────────────────────────────
 
 @app.route('/coffee-talk')
 def coffee_talk():
@@ -951,7 +935,7 @@ def create_topic():
         db.execute('INSERT INTO topics (user_id,title,content,category) VALUES (?,?,?,?)',
                    (session['user_id'], title, content, category))
         db.commit()
-        flash('Discussion started! ☕', 'success')
+        flash('Discussion started!', 'success')
         return redirect(url_for('coffee_talk'))
     user = current_user()
     msgs = unread_count()
@@ -1000,7 +984,6 @@ def delete_topic(topic_id):
         db.commit()
     return redirect(url_for('coffee_talk'))
 
-# ── TRIVIA ──────────────────────────────────────────────────────────────────
 
 @app.route('/trivia')
 def trivia():
@@ -1016,7 +999,9 @@ def trivia():
     return render_template('trivia.html', user=user,
                            questions=json.dumps(questions), unread=msgs)
 
+
 if __name__ == '__main__':
     init_db()
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
+Commit → deploy! 🚀
