@@ -1,6 +1,4 @@
-Here's the full app.py — GitHub → app.py → pencil ✏️ → Ctrl+A → delete → paste everything below the line:
-
-pythonimport os
+import os
 import hashlib
 import sqlite3
 import base64
@@ -1004,4 +1002,3 @@ if __name__ == '__main__':
     init_db()
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
-Commit → deploy! 🚀
