@@ -1002,3 +1002,24 @@ if __name__ == '__main__':
     init_db()
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
+# ── FREE LIBRARY ─────────────────────────────────────────────────────────────
+
+@app.route('/free-library')
+def free_library():
+    user = current_user()
+    msgs = unread_count()
+    return render_template('free_library.html', user=user, unread=msgs)
+
+@app.route('/free-library/read')
+def read_book():
+    import urllib.request
+    url = request.args.get('url', '')
+    if not url or 'gutenberg.org' not in url:
+        return 'Invalid URL', 400
+    try:
+        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            text = resp.read().decode('utf-8', errors='replace')
+        return text, 200, {'Content-Type': 'text/plain; charset=utf-8'}
+    except Exception as e:
+        return str(e), 500
