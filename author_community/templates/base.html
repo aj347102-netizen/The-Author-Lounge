@@ -2,76 +2,159 @@ html<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <title>The Author Lounge{% block title %}{% endblock %}</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Author Lounge{{ self.title() }}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+  <meta name="theme-color" content="#2A1608">
 </head>
 <body>
-  {% if user %}
-  <header class="top-bar">
-    <a href="{{ url_for('feed') }}" class="logo">🖊️ The Author Lounge</a>
-    <div class="top-bar-right">
-      <a href="{{ url_for('messages') }}" class="msg-icon">
-        ✉️{% if unread and unread > 0 %}<span class="msg-badge">{{ unread }}</span>{% endif %}
-      </a>
-      <a href="{{ url_for('create_post') }}" class="btn-post">+ Post</a>
-    </div>
-  </header>
-  {% endif %}
 
-  <main class="main-content {% if not user %}no-nav{% endif %}">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% for category, msg in messages %}
-        <div class="flash flash-{{ category }}">{{ msg }}</div>
-      {% endfor %}
-    {% endwith %}
-    {% block content %}{% endblock %}
-  </main>
+<!-- ── DESKTOP SIDEBAR ── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-top">The</div>
+    <div class="sidebar-logo-main">✒️ Author<br>Lounge</div>
+    <div class="sidebar-logo-sub">L O U N G E</div>
+  </div>
 
-  {% if user %}
-  <nav class="bottom-nav">
-    <a href="{{ url_for('feed') }}" class="nav-item {% if request.endpoint == 'feed' %}active{% endif %}">
-      <span class="nav-icon">🏠</span><span class="nav-label">Home</span>
-    </a>
-    <a href="{{ url_for('books') }}" class="nav-item {% if request.endpoint in ['books','add_book'] %}active{% endif %}">
-      <span class="nav-icon">📚</span><span class="nav-label">Books</span>
-    </a>
-    <a href="{{ url_for('writing') }}" class="nav-item nav-create {% if request.endpoint in ['writing','submit_writing','view_writing'] %}active{% endif %}">
-      <span class="nav-icon">✍️</span><span class="nav-label">Write</span>
-    </a>
-    <a href="{{ url_for('coffee_talk') }}" class="nav-item {% if request.endpoint in ['coffee_talk','create_topic','view_topic'] %}active{% endif %}">
-      <span class="nav-icon">☕</span><span class="nav-label">Talk</span>
-    </a>
-    <a href="#" class="nav-item" onclick="toggleMoreMenu(event)">
-      <span class="nav-icon">⋯</span><span class="nav-label">More</span>
-    </a>
+  <nav class="sidebar-nav">
+    <a href="{{ url_for('feed') }}" class="sidebar-link"><span class="s-icon">🏠</span> Home</a>
+    <a href="{{ url_for('explore') }}" class="sidebar-link"><span class="s-icon">👤</span> Authors</a>
+    <a href="{{ url_for('books') }}" class="sidebar-link"><span class="s-icon">📚</span> Books</a>
+    <a href="{{ url_for('explore') }}" class="sidebar-link"><span class="s-icon">👥</span> Community</a>
+    <a href="{{ url_for('coffee_talk') }}" class="sidebar-link"><span class="s-icon">☕</span> Coffee Talk</a>
+    <a href="{{ url_for('events') }}" class="sidebar-link"><span class="s-icon">📅</span> Events</a>
+    <div class="sidebar-divider"></div>
+    <a href="{{ url_for('writing') }}" class="sidebar-link"><span class="s-icon">✍️</span> Writing Hub</a>
+    <a href="{{ url_for('trivia') }}" class="sidebar-link"><span class="s-icon">🎮</span> Games Lounge</a>
+    <a href="{{ url_for('confessions') }}" class="sidebar-link"><span class="s-icon">🤫</span> Confessions</a>
+    <div class="sidebar-divider"></div>
+    <a href="{{ url_for('create_post') }}" class="sidebar-link"><span class="s-icon">💬</span> What's On Your Mind</a>
+    {% if user %}
+    <a href="{{ url_for('profile', username=user.username) }}" class="sidebar-link"><span class="s-icon">👤</span> My Profile</a>
+    <a href="{{ url_for('edit_profile') }}" class="sidebar-link"><span class="s-icon">⚙️</span> Edit Profile</a>
+    <a href="{{ url_for('logout') }}" class="sidebar-link"><span class="s-icon">🚪</span> Log Out</a>
+    {% else %}
+    <a href="{{ url_for('login') }}" class="sidebar-link"><span class="s-icon">🔑</span> Log In</a>
+    {% endif %}
   </nav>
 
-  <!-- More Menu Popup -->
-  <div class="more-menu" id="moreMenu">
-    <a href="{{ url_for('explore') }}" class="more-item">🔍 Explore Authors</a>
-    <a href="{{ url_for('events') }}" class="more-item">📅 Events</a>
-    <a href="{{ url_for('confessions') }}" class="more-item">🤫 Confessions</a>
-    <a href="{{ url_for('profile', username=user['username']) }}" class="more-item">👤 My Profile</a>
-    <a href="{{ url_for('edit_profile') }}" class="more-item">✏️ Edit Profile</a>
-    <a href="{{ url_for('logout') }}" class="more-item more-logout">🚪 Log Out</a>
+  {% if user %}
+  <div class="sidebar-user">
+    {% if user.avatar_url %}
+    <img src="{{ user.avatar_url }}" class="avatar sm" alt="{{ user.display_name }}">
+    {% else %}
+    <div class="avatar avatar-initial sm">{{ user.display_name[0].upper() }}</div>
+    {% endif %}
+    <div class="sidebar-user-info">
+      <div class="sidebar-user-greeting">Welcome,</div>
+      <div class="sidebar-user-name">{{ user.display_name }}</div>
+      <span class="sidebar-member-badge">Member</span>
+    </div>
   </div>
-  <div class="more-overlay" id="moreOverlay" onclick="closeMoreMenu()"></div>
   {% endif %}
+</aside>
 
-  <script src="{{ url_for('static', filename='app.js') }}"></script>
-  <script>
-    function toggleMoreMenu(e) {
-      e.preventDefault();
-      document.getElementById('moreMenu').classList.toggle('open');
-      document.getElementById('moreOverlay').classList.toggle('open');
-    }
-    function closeMoreMenu() {
-      document.getElementById('moreMenu').classList.remove('open');
-      document.getElementById('moreOverlay').classList.remove('open');
-    }
-  </script>
+<!-- ── MAIN WRAPPER ── -->
+<div class="main-wrapper">
+
+  <!-- Desktop top bar -->
+  <div class="site-top-bar">
+    <div class="site-search">
+      <span>🔍</span>
+      <input type="text" placeholder="Search books, authors, topics...">
+    </div>
+    <div class="top-bar-icons">
+      <a href="{{ url_for('messages') }}" class="top-icon">
+        ✉️
+        {% if unread and unread > 0 %}<span class="t-badge">{{ unread }}</span>{% endif %}
+      </a>
+      {% if user %}
+      <a href="{{ url_for('profile', username=user.username) }}" class="top-avatar">
+        {% if user.avatar_url %}
+        <img src="{{ user.avatar_url }}" alt="{{ user.display_name }}">
+        {% else %}
+        {{ user.display_name[0].upper() }}
+        {% endif %}
+      </a>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Page content -->
+  <div class="content">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </div>
+
+</div><!-- end .main-wrapper -->
+
+<!-- ── MOBILE TOP BAR ── -->
+<div class="top-bar" id="top-bar">
+  <a href="{{ url_for('feed') }}" class="logo">✒️ The Author Lounge</a>
+  <div class="top-bar-right">
+    <a href="{{ url_for('messages') }}" class="msg-icon">
+      ✉️
+      {% if unread and unread > 0 %}<span class="msg-badge">{{ unread }}</span>{% endif %}
+    </a>
+  </div>
+</div>
+
+<!-- ── MOBILE BOTTOM NAV ── -->
+<nav class="bottom-nav">
+  <a href="{{ url_for('feed') }}" class="nav-item">
+    <span class="nav-icon">🏠</span><span class="nav-label">Home</span>
+  </a>
+  <a href="{{ url_for('books') }}" class="nav-item">
+    <span class="nav-icon">📚</span><span class="nav-label">Books</span>
+  </a>
+  <a href="{{ url_for('writing') }}" class="nav-item">
+    <span class="nav-icon">✍️</span><span class="nav-label">Write</span>
+  </a>
+  <a href="{{ url_for('coffee_talk') }}" class="nav-item">
+    <span class="nav-icon">☕</span><span class="nav-label">Talk</span>
+  </a>
+  <button class="nav-item" onclick="toggleMoreMenu()">
+    <span class="nav-icon">⋯</span><span class="nav-label">More</span>
+  </button>
+</nav>
+
+<!-- ── MORE MENU (mobile) ── -->
+<div class="more-overlay" id="more-overlay" onclick="closeMoreMenu()"></div>
+<div class="more-menu" id="more-menu">
+  <a href="{{ url_for('explore') }}" class="more-item" onclick="closeMoreMenu()">🔍 Explore Authors</a>
+  <a href="{{ url_for('events') }}" class="more-item" onclick="closeMoreMenu()">📅 Events</a>
+  <a href="{{ url_for('confessions') }}" class="more-item" onclick="closeMoreMenu()">🤫 Confessions</a>
+  <a href="{{ url_for('trivia') }}" class="more-item" onclick="closeMoreMenu()">🎯 Book Trivia</a>
+  {% if user %}
+  <a href="{{ url_for('profile', username=user.username) }}" class="more-item" onclick="closeMoreMenu()">👤 My Profile</a>
+  <a href="{{ url_for('edit_profile') }}" class="more-item" onclick="closeMoreMenu()">⚙️ Edit Profile</a>
+  <a href="{{ url_for('logout') }}" class="more-item more-logout" onclick="closeMoreMenu()">🚪 Log Out</a>
+  {% else %}
+  <a href="{{ url_for('login') }}" class="more-item" onclick="closeMoreMenu()">🔑 Log In</a>
+  {% endif %}
+</div>
+
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+<script>
+function toggleMoreMenu() {
+  document.getElementById('more-menu').classList.toggle('open');
+  document.getElementById('more-overlay').classList.toggle('open');
+}
+function closeMoreMenu() {
+  document.getElementById('more-menu').classList.remove('open');
+  document.getElementById('more-overlay').classList.remove('open');
+}
+</script>
+
+{% block extra_js %}{% endblock %}
 </body>
 </html>
+Commit, then say next! 🏗️AskSonnet 4.6Claude is AI and can make mistakes. Please double-check responses.
