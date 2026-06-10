@@ -18,14 +18,15 @@
 <div class="feed-home-grid">
 
   <!-- LEFT COLUMN -->
-  <div>
+  <div class="feed-main-col">
 
     <!-- Hero image (desktop only) -->
-    <div class="feed-hero" style="background: url('https://github.com/user-attachments/assets/c06d1745-abc0-4cf3-b17d-59cc7f4f3ef6') center center / cover no-repeat; min-height:320px;">
-      <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.3) 0%,rgba(0,0,0,0.65) 100%);border-radius:16px;"></div>
+    <div class="feed-hero">
+      <div class="feed-hero-overlay"></div>
       <div class="feed-hero-content">
         <h1>Welcome to The Author Lounge</h1>
-        <p>Read. Write. Connect. Inspire. — Share Your Story, Build Your Brand, Belong.</p>
+        <p>Read. Write. Connect. Inspire.</p>
+        <p class="feed-hero-tagline">Share Your Story. Build Your Brand. Belong.</p>
       </div>
     </div>
 
@@ -34,38 +35,46 @@
       <a href="{{ url_for('coffee_talk') }}" class="feature-card">
         <span class="feature-card-icon">☕</span>
         <span class="feature-card-label">Coffee Talk</span>
+        <span class="feature-card-desc">Join the conversation</span>
       </a>
       <a href="{{ url_for('explore') }}" class="feature-card">
         <span class="feature-card-icon">👥</span>
         <span class="feature-card-label">Community</span>
+        <span class="feature-card-desc">Connect with authors</span>
       </a>
       <a href="{{ url_for('writing') }}" class="feature-card">
         <span class="feature-card-icon">✍️</span>
         <span class="feature-card-label">Writing Hub</span>
+        <span class="feature-card-desc">Tips, prompts &amp; resources</span>
       </a>
       <a href="{{ url_for('trivia') }}" class="feature-card">
         <span class="feature-card-icon">🎯</span>
         <span class="feature-card-label">Games Lounge</span>
+        <span class="feature-card-desc">Play &amp; have fun</span>
       </a>
       <a href="{{ url_for('books') }}" class="feature-card">
         <span class="feature-card-icon">📚</span>
         <span class="feature-card-label">Books</span>
+        <span class="feature-card-desc">Showcase your work</span>
       </a>
       <a href="{{ url_for('messages') }}" class="feature-card">
         <span class="feature-card-icon">✉️</span>
         <span class="feature-card-label">Messages</span>
+        <span class="feature-card-desc">Chat privately</span>
       </a>
       <a href="{{ url_for('confessions') }}" class="feature-card">
         <span class="feature-card-icon">🤫</span>
         <span class="feature-card-label">Confessions</span>
+        <span class="feature-card-desc">Share anonymously</span>
       </a>
       <a href="{{ url_for('events') }}" class="feature-card">
         <span class="feature-card-icon">📅</span>
         <span class="feature-card-label">Events</span>
+        <span class="feature-card-desc">Workshops &amp; meetups</span>
       </a>
     </div>
 
-    <!-- Welcome banner (mobile) -->
+    <!-- Welcome banner (mobile only) -->
     <div class="welcome-banner">
       <div class="welcome-text">
         <span class="welcome-greeting">Welcome back, {{ user['display_name'].split()[0] if user['display_name'] else user['username'] }}! ☕</span>
@@ -85,7 +94,7 @@
       </div>
     </div>
 
-    <!-- Posts feed -->
+    <!-- Posts -->
     {% if posts %}
     <div class="feed">
       {% for post in posts %}
@@ -114,7 +123,7 @@
         {% if post.post_type == 'event' %}
         <div class="event-banner">
           <div class="event-icon">📅</div>
-          <div>
+          <div class="event-details">
             <div class="event-date">{{ post.event_date }}</div>
             {% if post.event_location %}<div class="event-location">📍 {{ post.event_location }}</div>{% endif %}
           </div>
@@ -165,10 +174,22 @@
   <div class="feed-right-panel">
 
     <div class="panel-widget">
+      <div class="panel-widget-title">📅 Upcoming Events</div>
+      <p style="color:var(--muted);font-size:.82rem;line-height:1.5;margin-bottom:8px;">No events yet. Be the first!</p>
+      <a href="{{ url_for('create_post', type='event') }}" class="panel-link">+ Add Event →</a>
+    </div>
+
+    <div class="panel-widget">
+      <div class="panel-widget-title">📚 New Book Releases</div>
+      <p style="color:var(--muted);font-size:.82rem;line-height:1.5;margin-bottom:8px;">No books showcased yet.</p>
+      <a href="{{ url_for('add_book') }}" class="panel-link">+ Showcase Your Book →</a>
+    </div>
+
+    <div class="panel-widget">
       <div class="panel-widget-title">🔗 Quick Links</div>
       <div class="panel-quick-links">
         <a href="{{ url_for('books') }}" class="panel-quick-link">📚 Book Showcase</a>
-        <a href="{{ url_for('events') }}" class="panel-quick-link">📅 Upcoming Events</a>
+        <a href="{{ url_for('events') }}" class="panel-quick-link">📅 Events</a>
         <a href="{{ url_for('writing') }}" class="panel-quick-link">✍️ Writing Hub</a>
         <a href="{{ url_for('coffee_talk') }}" class="panel-quick-link">☕ Coffee Talk</a>
         <a href="{{ url_for('confessions') }}" class="panel-quick-link">🤫 Confessions</a>
@@ -180,13 +201,7 @@
 
     <div class="panel-widget">
       <div class="panel-widget-title">✨ Today's Affirmation</div>
-      <p id="daily-affirmation-panel" style="color:var(--ink);font-size:.88rem;font-style:italic;line-height:1.6;"></p>
-    </div>
-
-    <div class="panel-widget">
-      <div class="panel-widget-title">🖊️ About The Lounge</div>
-      <p style="color:var(--muted);font-size:.82rem;line-height:1.6;">A warm community for authors to share, connect, and grow. Post your thoughts, showcase your books, and find your people.</p>
-      <a href="{{ url_for('explore') }}" class="panel-link">Meet the authors →</a>
+      <p id="affirmation-panel" style="color:var(--ink);font-size:.88rem;font-style:italic;line-height:1.6;"></p>
     </div>
 
   </div><!-- end right panel -->
@@ -199,18 +214,18 @@ const affirmations = [
   "Every word you write matters.",
   "Your story deserves to be told.",
   "The best chapter is the one you write today.",
-  "Writers write. And you belong here.",
+  "Writers write — and you belong here.",
   "Your imagination is your superpower.",
-  "One page at a time — you have got this.",
+  "One page at a time. You have got this.",
   "Great stories start with one brave sentence.",
   "The lounge is always warm for you.",
   "You are exactly where you need to be.",
   "Your words have the power to change someones world.",
 ];
 const idx = new Date().getDate() % affirmations.length;
-const el = document.getElementById('daily-affirmation');
-const el2 = document.getElementById('daily-affirmation-panel');
-if (el) el.textContent = affirmations[idx];
+const el1 = document.getElementById('daily-affirmation');
+const el2 = document.getElementById('affirmation-panel');
+if (el1) el1.textContent = affirmations[idx];
 if (el2) el2.textContent = affirmations[idx];
 </script>
 
