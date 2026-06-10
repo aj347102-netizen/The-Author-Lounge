@@ -122,3 +122,55 @@
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% for category, msg in messages %}
         <div class="flash flash-{{ category }}">{{ msg }}</div>
+      {% endfor %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- MOBILE BOTTOM NAV (hidden on desktop) -->
+  {% if user %}
+  <nav class="bottom-nav">
+    <a href="{{ url_for('feed') }}" class="nav-item {% if request.endpoint == 'feed' %}active{% endif %}">
+      <span class="nav-icon">🏠</span><span class="nav-label">Home</span>
+    </a>
+    <a href="{{ url_for('books') }}" class="nav-item {% if request.endpoint in ['books','add_book'] %}active{% endif %}">
+      <span class="nav-icon">📚</span><span class="nav-label">Books</span>
+    </a>
+    <a href="{{ url_for('writing') }}" class="nav-item nav-create {% if request.endpoint in ['writing','submit_writing','view_writing'] %}active{% endif %}">
+      <span class="nav-icon">✍️</span><span class="nav-label">Write</span>
+    </a>
+    <a href="{{ url_for('coffee_talk') }}" class="nav-item {% if request.endpoint in ['coffee_talk','create_topic','view_topic'] %}active{% endif %}">
+      <span class="nav-icon">☕</span><span class="nav-label">Talk</span>
+    </a>
+    <a href="#" class="nav-item" onclick="toggleMoreMenu(event)">
+      <span class="nav-icon">⋯</span><span class="nav-label">More</span>
+    </a>
+  </nav>
+
+  <div class="more-menu" id="moreMenu">
+    <a href="{{ url_for('explore') }}" class="more-item">🔍 Explore Authors</a>
+    <a href="{{ url_for('events') }}" class="more-item">📅 Events</a>
+    <a href="{{ url_for('confessions') }}" class="more-item">🤫 Confessions</a>
+    <a href="{{ url_for('trivia') }}" class="more-item">🎯 Book Trivia</a>
+    <a href="{{ url_for('free_library') }}" class="more-item">📖 Free Library</a>
+    <a href="{{ url_for('profile', username=user['username']) }}" class="more-item">👤 My Profile</a>
+    <a href="{{ url_for('edit_profile') }}" class="more-item">✏️ Edit Profile</a>
+    <a href="{{ url_for('logout') }}" class="more-item more-logout">🚪 Log Out</a>
+  </div>
+  <div class="more-overlay" id="moreOverlay" onclick="closeMoreMenu()"></div>
+  {% endif %}
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+  <script>
+    function toggleMoreMenu(e) {
+      e.preventDefault();
+      document.getElementById('moreMenu').classList.toggle('open');
+      document.getElementById('moreOverlay').classList.toggle('open');
+    }
+    function closeMoreMenu() {
+      document.getElementById('moreMenu').classList.remove('open');
+      document.getElementById('moreOverlay').classList.remove('open');
+    }
+  </script>
+</body>
+</html>
