@@ -403,7 +403,7 @@ select option { background: var(--dark2); }
 }
 
 /* ── HIDE DESKTOP ELEMENTS ON MOBILE ── */
-@media (max-width: 768px) {
+.main-content { max-width: none; padding: 24px 32px 40px; }
   .desktop-sidebar    { display: none !important; }
   .site-top-bar       { display: none !important; }
   .feed-right-panel   { display: none !important; }
