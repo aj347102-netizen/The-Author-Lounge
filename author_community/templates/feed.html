@@ -2,116 +2,119 @@
 {% block title %} — Home{% endblock %}
 {% block content %}
 
+{% if not user %}
+<div class="hero">
+  <div class="hero-logo">🖊️</div>
+  <h1>The Author Lounge</h1>
+  <p>A warm place for authors to share their journey, spark conversation, and celebrate every word written.</p>
+  <div class="hero-actions">
+    <a href="{{ url_for('register') }}" class="btn-primary">Join the Lounge 🍵</a>
+    <a href="{{ url_for('login') }}" class="btn-outline">Sign In</a>
+  </div>
+</div>
+{% endif %}
+
+{% if user %}
 <div class="feed-home-grid">
 
-  <!-- Left: Hero + Feature Cards + Posts -->
-  <div class="feed-main">
+  <!-- LEFT COLUMN -->
+  <div>
 
-    <!-- Hero Banner -->
-    <div class="feed-hero" style="background: url('https://github.com/user-attachments/assets/c06d1745-abc0-4cf3-b17d-59cc7f4f3ef6') center center / cover no-repeat; min-height:380px;">
-      <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 100%);border-radius:16px;"></div>
-      <h1 class="feed-hero-title">Welcome to The Author Lounge</h1>
-      <p class="feed-hero-sub">Read. Write. Connect. Inspire.</p>
-      <div class="feed-hero-divider">— ✒️ —</div>
-      {% if user %}
-      <p class="feed-hero-tagline">Welcome back, {{ user.display_name }}! ☕</p>
-      {% else %}
-      <p class="feed-hero-tagline">✦ Share Your Story. Build Your Brand. Belong. ✦</p>
-      {% endif %}
+    <!-- Hero image (desktop only) -->
+    <div class="feed-hero" style="background: url('https://github.com/user-attachments/assets/c06d1745-abc0-4cf3-b17d-59cc7f4f3ef6') center center / cover no-repeat; min-height:320px;">
+      <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.3) 0%,rgba(0,0,0,0.65) 100%);border-radius:16px;"></div>
+      <div class="feed-hero-content">
+        <h1>Welcome to The Author Lounge</h1>
+        <p>Read. Write. Connect. Inspire. — Share Your Story, Build Your Brand, Belong.</p>
+      </div>
     </div>
 
-    <!-- Feature Cards -->
+    <!-- Feature cards (desktop only) -->
     <div class="feature-cards-grid">
       <a href="{{ url_for('coffee_talk') }}" class="feature-card">
         <span class="feature-card-icon">☕</span>
-        <div class="feature-card-title">Coffee Talk</div>
-        <div class="feature-card-desc">Join the conversation</div>
+        <span class="feature-card-label">Coffee Talk</span>
       </a>
       <a href="{{ url_for('explore') }}" class="feature-card">
         <span class="feature-card-icon">👥</span>
-        <div class="feature-card-title">Community</div>
-        <div class="feature-card-desc">Connect with authors & readers</div>
+        <span class="feature-card-label">Community</span>
       </a>
       <a href="{{ url_for('writing') }}" class="feature-card">
         <span class="feature-card-icon">✍️</span>
-        <div class="feature-card-title">Writing Hub</div>
-        <div class="feature-card-desc">Tips, prompts & resources</div>
+        <span class="feature-card-label">Writing Hub</span>
       </a>
       <a href="{{ url_for('trivia') }}" class="feature-card">
-        <span class="feature-card-icon">🎮</span>
-        <div class="feature-card-title">Games Lounge</div>
-        <div class="feature-card-desc">Play & have some fun</div>
+        <span class="feature-card-icon">🎯</span>
+        <span class="feature-card-label">Games Lounge</span>
       </a>
       <a href="{{ url_for('books') }}" class="feature-card">
-        <span class="feature-card-icon">🛍️</span>
-        <div class="feature-card-title">Books</div>
-        <div class="feature-card-desc">Discover great reads</div>
+        <span class="feature-card-icon">📚</span>
+        <span class="feature-card-label">Books</span>
       </a>
       <a href="{{ url_for('messages') }}" class="feature-card">
         <span class="feature-card-icon">✉️</span>
-        <div class="feature-card-title">Messages</div>
-        <div class="feature-card-desc">Chat with your favorites</div>
+        <span class="feature-card-label">Messages</span>
       </a>
       <a href="{{ url_for('confessions') }}" class="feature-card">
         <span class="feature-card-icon">🤫</span>
-        <div class="feature-card-title">Confessions</div>
-        <div class="feature-card-desc">Share. Support. Stay anonymous.</div>
+        <span class="feature-card-label">Confessions</span>
       </a>
       <a href="{{ url_for('events') }}" class="feature-card">
         <span class="feature-card-icon">📅</span>
-        <div class="feature-card-title">Events</div>
-        <div class="feature-card-desc">Virtual & in-person meetups</div>
+        <span class="feature-card-label">Events</span>
       </a>
     </div>
 
-    <!-- Mobile welcome banner -->
-    {% if user %}
-    <div class="welcome-banner" style="margin-top:16px;">
-      Welcome back, <strong>{{ user.display_name }}</strong>! ☕
+    <!-- Welcome banner (mobile) -->
+    <div class="welcome-banner">
+      <div class="welcome-text">
+        <span class="welcome-greeting">Welcome back, {{ user['display_name'].split()[0] if user['display_name'] else user['username'] }}! ☕</span>
+        <span class="welcome-affirmation" id="daily-affirmation">Every word you write matters.</span>
+      </div>
+      <span class="welcome-quill">🖊️</span>
     </div>
-    {% endif %}
 
-    <!-- Posts Feed -->
-    <div class="feed" style="margin-top:16px;">
-      {% if user %}
-      <a href="{{ url_for('create_post') }}" class="create-post-card" style="display:block;text-decoration:none;margin-bottom:14px;">
-        <div style="display:flex;align-items:center;gap:10px;">
-          {% if user.avatar_url %}
-          <img src="{{ user.avatar_url }}" class="avatar sm" alt="">
-          {% else %}
-          <div class="avatar avatar-initial sm">{{ user.display_name[0].upper() }}</div>
-          {% endif %}
-          <span style="color:var(--muted);font-size:0.9rem;">What's on your mind, {{ user.display_name }}?</span>
-        </div>
-      </a>
-      {% endif %}
+    <!-- Quick post bar -->
+    <div class="quick-post-bar">
+      <div class="quick-avatar">{{ user['display_name'][0] }}</div>
+      <div class="quick-post-types">
+        <a href="{{ url_for('create_post', type='thought') }}" class="quick-type thought">💭 Thought</a>
+        <a href="{{ url_for('create_post', type='snap') }}" class="quick-type snap">📸 Snap</a>
+        <a href="{{ url_for('create_post', type='reel') }}" class="quick-type reel">🎬 Reel</a>
+        <a href="{{ url_for('create_post', type='event') }}" class="quick-type event">📅 Event</a>
+      </div>
+    </div>
 
+    <!-- Posts feed -->
+    {% if posts %}
+    <div class="feed">
       {% for post in posts %}
       <article class="post-card post-{{ post.post_type }}">
         <div class="post-header">
           <a href="{{ url_for('profile', username=post.username) }}" class="post-author">
             {% if post.avatar_url %}
-            <img src="{{ post.avatar_url }}" alt="{{ post.display_name }}" class="avatar">
+              <img src="{{ post.avatar_url }}" class="avatar" alt="{{ post.display_name }}">
             {% else %}
-            <div class="avatar avatar-initial">{{ post.display_name[0].upper() }}</div>
+              <div class="avatar avatar-initial">{{ post.display_name[0] }}</div>
             {% endif %}
             <div class="post-author-info">
               <span class="author-name">{{ post.display_name }}</span>
-              <span class="author-meta">@{{ post.username }} · {{ post.time_ago }} ago</span>
+              <span class="author-meta">@{{ post.username }} · {{ post.time_ago }}</span>
             </div>
           </a>
           <span class="post-type-badge badge-{{ post.post_type }}">
-            {% if post.post_type == 'thought' %}💭
-            {% elif post.post_type == 'snap' %}📸
-            {% elif post.post_type == 'reel' %}🎬
-            {% elif post.post_type == 'event' %}📅{% endif %}
+            {% if post.post_type == 'thought' %}💭 Thought
+            {% elif post.post_type == 'snap' %}📸 Snap
+            {% elif post.post_type == 'reel' %}🎬 Reel
+            {% elif post.post_type == 'event' %}📅 Event
+            {% endif %}
           </span>
         </div>
 
-        {% if post.post_type == 'event' and post.event_date %}
+        {% if post.post_type == 'event' %}
         <div class="event-banner">
           <div class="event-icon">📅</div>
-          <div class="event-details">
+          <div>
             <div class="event-date">{{ post.event_date }}</div>
             {% if post.event_location %}<div class="event-location">📍 {{ post.event_location }}</div>{% endif %}
           </div>
@@ -119,9 +122,13 @@
         {% endif %}
 
         {% if post.media_url and post.post_type == 'snap' %}
-        <div class="post-media"><img src="{{ post.media_url }}" alt="Post image" loading="lazy" onerror="this.style.display='none'"></div>
+        <div class="post-media">
+          <img src="{{ post.media_url }}" alt="Post image" loading="lazy" onerror="this.style.display='none'">
+        </div>
         {% elif post.media_url and post.post_type == 'reel' %}
-        <div class="post-media"><video src="{{ post.media_url }}" controls preload="metadata" style="width:100%;border-radius:8px;"></video></div>
+        <div class="post-media">
+          <video src="{{ post.media_url }}" controls preload="metadata" style="width:100%;border-radius:8px;"></video>
+        </div>
         {% endif %}
 
         <div class="post-content">{{ post.content }}</div>
@@ -134,84 +141,77 @@
             <span class="like-count">{{ post.like_count }}</span>
           </button>
           {% else %}
-          <span class="action-btn">🤍 {{ post.like_count }}</span>
+          <span class="action-btn"><span class="action-icon">🤍</span> {{ post.like_count }}</span>
           {% endif %}
-          <a href="{{ url_for('view_post', post_id=post.id) }}" class="action-btn">💬 {{ post.comment_count }}</a>
+          <a href="{{ url_for('view_post', post_id=post.id) }}" class="action-btn">
+            <span class="action-icon">💬</span> {{ post.comment_count }}
+          </a>
         </div>
       </article>
-      {% else %}
-      <div class="empty-state">
-        <div class="empty-icon">✍️</div>
-        <h3>The lounge is quiet…</h3>
-        <p>Be the first to post something!</p>
-        {% if user %}
-        <a href="{{ url_for('create_post') }}" class="btn-primary">Write Something</a>
-        {% else %}
-        <a href="{{ url_for('login') }}" class="btn-primary">Join the Lounge</a>
-        {% endif %}
-      </div>
       {% endfor %}
     </div>
-  </div>
+    {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">🕯️</div>
+      <h3>The lounge is quiet right now...</h3>
+      <p>Pull up a chair and be the first to share something!</p>
+      <a href="{{ url_for('create_post') }}" class="btn-primary">Share Something 🖊️</a>
+    </div>
+    {% endif %}
 
-  <!-- Right Panel (desktop only) -->
+  </div><!-- end left column -->
+
+  <!-- RIGHT PANEL (desktop only) -->
   <div class="feed-right-panel">
 
     <div class="panel-widget">
-      <div class="panel-widget-header">
-        <span class="panel-widget-title">📅 Upcoming Events</span>
-        <a href="{{ url_for('events') }}" class="panel-view-all">View All</a>
+      <div class="panel-widget-title">🔗 Quick Links</div>
+      <div class="panel-quick-links">
+        <a href="{{ url_for('books') }}" class="panel-quick-link">📚 Book Showcase</a>
+        <a href="{{ url_for('events') }}" class="panel-quick-link">📅 Upcoming Events</a>
+        <a href="{{ url_for('writing') }}" class="panel-quick-link">✍️ Writing Hub</a>
+        <a href="{{ url_for('coffee_talk') }}" class="panel-quick-link">☕ Coffee Talk</a>
+        <a href="{{ url_for('confessions') }}" class="panel-quick-link">🤫 Confessions</a>
+        <a href="{{ url_for('free_library') }}" class="panel-quick-link">📖 Free Library</a>
+        <a href="{{ url_for('trivia') }}" class="panel-quick-link">🎯 Book Trivia</a>
+        <a href="{{ url_for('explore') }}" class="panel-quick-link">🔍 Find Authors</a>
       </div>
-      {% if panel_events %}
-        {% for e in panel_events %}
-        <div class="panel-event-row">
-          <div class="panel-event-icon">📅</div>
-          <div class="panel-event-info">
-            <div class="panel-event-name">{{ e.title }}</div>
-            <div class="panel-event-date">{{ e.event_date }}{% if e.event_time %} · {{ e.event_time }}{% endif %}</div>
-            <a href="{{ url_for('events') }}" class="panel-btn">Register</a>
-          </div>
-        </div>
-        {% endfor %}
-      {% else %}
-      <p style="color:var(--muted);font-size:0.78rem;">No upcoming events yet.</p>
-      {% endif %}
     </div>
 
     <div class="panel-widget">
-      <div class="panel-widget-header">
-        <span class="panel-widget-title">📚 New Book Releases</span>
-        <a href="{{ url_for('books') }}" class="panel-view-all">View All</a>
-      </div>
-      {% if panel_books %}
-      <div class="panel-books-row">
-        {% for b in panel_books %}
-        <a href="{{ url_for('books') }}" class="panel-book-cover">
-          {% if b.cover_url %}
-          <img src="{{ b.cover_url }}" alt="{{ b.title }}">
-          {% else %}
-          📖
-          {% endif %}
-        </a>
-        {% endfor %}
-      </div>
-      {% else %}
-      <p style="color:var(--muted);font-size:0.78rem;">No books added yet.</p>
-      {% endif %}
+      <div class="panel-widget-title">✨ Today's Affirmation</div>
+      <p id="daily-affirmation-panel" style="color:var(--ink);font-size:.88rem;font-style:italic;line-height:1.6;"></p>
     </div>
 
     <div class="panel-widget">
-      <div class="panel-widget-header">
-        <span class="panel-widget-title">🔗 Quick Links</span>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:6px;">
-        <a href="{{ url_for('confessions') }}" class="panel-btn" style="text-align:center;">🤫 Confessions Wall</a>
-        <a href="{{ url_for('trivia') }}" class="panel-btn" style="text-align:center;">🎯 Book Trivia</a>
-        <a href="{{ url_for('writing') }}" class="panel-btn" style="text-align:center;">✍️ Community Writing</a>
-      </div>
+      <div class="panel-widget-title">🖊️ About The Lounge</div>
+      <p style="color:var(--muted);font-size:.82rem;line-height:1.6;">A warm community for authors to share, connect, and grow. Post your thoughts, showcase your books, and find your people.</p>
+      <a href="{{ url_for('explore') }}" class="panel-link">Meet the authors →</a>
     </div>
 
-  </div>
-</div>
+  </div><!-- end right panel -->
+
+</div><!-- end feed-home-grid -->
+{% endif %}
+
+<script>
+const affirmations = [
+  "Every word you write matters.",
+  "Your story deserves to be told.",
+  "The best chapter is the one you write today.",
+  "Writers write. And you belong here.",
+  "Your imagination is your superpower.",
+  "One page at a time — you have got this.",
+  "Great stories start with one brave sentence.",
+  "The lounge is always warm for you.",
+  "You are exactly where you need to be.",
+  "Your words have the power to change someones world.",
+];
+const idx = new Date().getDate() % affirmations.length;
+const el = document.getElementById('daily-affirmation');
+const el2 = document.getElementById('daily-affirmation-panel');
+if (el) el.textContent = affirmations[idx];
+if (el2) el2.textContent = affirmations[idx];
+</script>
 
 {% endblock %}
